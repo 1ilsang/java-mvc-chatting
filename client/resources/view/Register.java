@@ -1,5 +1,7 @@
 package resources.view;
 
+import controller.DispatcherController;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +9,7 @@ import java.awt.event.ActionListener;
 public class Register implements IView {
     private static Register register = new Register();
     private Index idx = Index.getInstance();
+    private DispatcherController dispatcherController = DispatcherController.getInstance();
 
     private Button registerBtn, back;
     private TextField id, pw;
@@ -15,14 +18,17 @@ public class Register implements IView {
     public static Register getInstance() {
         return register;
     }
+
     private Register() {
 
     }
+
     @Override
     public void show() {
         init();
         addEventListener();
     }
+
     private void init() {
         idx.frame.removeAll();
         idx.frame.setTitle("Register");
@@ -43,12 +49,22 @@ public class Register implements IView {
 
         idx.frame.setVisible(true);
     }
+
     private void addEventListener() {
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Index.getInstance().show("home");
-            }
+        // Before Lambda expression
+//        registerBtn.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                dispatcherController.setUserName(id.getText());
+//                Index.getInstance().show("roomList");
+//            }
+//        });
+        registerBtn.addActionListener(e -> {
+            dispatcherController.setUserName(id.getText());
+            Index.getInstance().show("roomList");
+        });
+        back.addActionListener(e -> {
+            Index.getInstance().show("home");
         });
     }
 }

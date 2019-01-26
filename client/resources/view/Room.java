@@ -1,15 +1,15 @@
 package resources.view;
 
-import controller.ChatController;
+import controller.DispatcherController;
+import dto.CommandDTO;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 // 각 방의 실질적인 유저임.
 public class Room implements IView {
+    private DispatcherController dispatcherController = DispatcherController.getInstance();
     private Index idx = Index.getInstance();
     private Button send, leave;
     private TextField inputArea;
@@ -20,6 +20,7 @@ public class Room implements IView {
     public void show() {
         init();
         addEventListener();
+        dispatcherController.in("chat","connect");
     }
 
     public Room(int rno) {
@@ -50,6 +51,10 @@ public class Room implements IView {
             public void actionPerformed(ActionEvent e) {
                 // TODO 1. Controller 를 통해 데이터 센드
                 // TODO 2. 받은 데이터 chatArea 에 덧붙이기
+                CommandDTO commandDTO = new CommandDTO();
+                commandDTO.setRno(rno);
+                commandDTO.setText(inputArea.getText());
+                dispatcherController.in("chat", "sendBroadCast", commandDTO);
             }
         });
         leave.addActionListener(new ActionListener() {
@@ -57,6 +62,7 @@ public class Room implements IView {
             public void actionPerformed(ActionEvent e) {
                 // TODO socket 끊기.
                 // FIXME Controller
+                dispatcherController.in("chat", "disconnect");
                 Index.getInstance().show("roomList");
             }
         });
