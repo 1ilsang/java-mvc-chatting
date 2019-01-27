@@ -8,8 +8,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
-// 각 방의 실질적인 유저임.
+/**
+ * This can be multiple objects.(2019/01/27 - 2 Rooms)
+ * Each object will be chosen by RoomList
+ */
 public class RoomView implements IView {
     private DispatcherController dispatcherController = DispatcherController.getInstance();
     private IndexView idx = IndexView.getInstance();
@@ -17,6 +21,7 @@ public class RoomView implements IView {
     private TextField inputArea;
     private JLabel chatArea;
     private int rno;
+    private int chatCnt;
 
     @Override
     public void show() {
@@ -46,18 +51,20 @@ public class RoomView implements IView {
 
         idx.frame.setVisible(true);
     }
+    private void sendMessage() {
+        if (inputArea.getText().equals("")) return;
+        // TODO Functionalization this.
+        CommandDTO commandDTO = new CommandDTO();
+        commandDTO.setRno(rno);
+        commandDTO.setText(inputArea.getText());
+        commandDTO.setUserName(dispatcherController.getUserName());
+        dispatcherController.in("chat", "sendBroadCast", commandDTO);
+        inputArea.setText("");
+    }
 
     private void addEventListener() {
-        send.addActionListener(e -> {
-            if(inputArea.getText().equals("")) return;
-            // FIXME DTO 만드는거 함수화
-            CommandDTO commandDTO = new CommandDTO();
-            commandDTO.setRno(rno);
-            commandDTO.setText(inputArea.getText());
-            commandDTO.setUserName(dispatcherController.getUserName());
-            dispatcherController.in("chat", "sendBroadCast", commandDTO);
-            inputArea.setText("");
-        });
+        inputArea.addActionListener(e -> sendMessage());
+        send.addActionListener(e -> sendMessage());
         leave.addActionListener(e -> {
             // TODO Front Controller
             dispatcherController.in("chat", "disconnect");
@@ -66,7 +73,10 @@ public class RoomView implements IView {
     }
 
     public void printChat(MessageDTO messageDTO) {
-        String prev = chatArea.getText();
-        chatArea.setText("<html>" +prev + "<br/>" + messageDTO.getName() + ": " + messageDTO.getContents());
+        String prev = chatArea.getText().replace("<html>", "").replace("</html>", "");
+        if (chatCnt == 4) prev = prev.substring(prev.indexOf("<br/>") + 5);
+        else chatCnt++;
+        // XXX Important :: XSS :: You must block XSS.
+        chatArea.setText("<html>" + prev + messageDTO.getName() + ": " + messageDTO.getContents() + "<br/></html>");
     }
 }

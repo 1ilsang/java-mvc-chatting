@@ -28,7 +28,7 @@ public class IndexView {
         });
         frame.setLayout(new GridLayout(5, 0));
         frame.setSize(300, 300);
-
+        frame.setResizable(false);
         // FIXME Controller
         show("home");
     }

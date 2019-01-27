@@ -3,7 +3,7 @@ package controller;
 import dto.CommandDTO;
 
 /**
- * Branching controller :: All requests go through here.
+ * Branching controller :: All requests go through this.
  */
 public class DispatcherController implements IController {
     private String userName;

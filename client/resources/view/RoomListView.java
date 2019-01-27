@@ -22,6 +22,7 @@ public class RoomListView implements IView {
     @Override
     public void show() {
         init();
+        // TODO Create dynamic size
         for (int i = 0; i < 5; i++) rooms[i] = new RoomView(i);
         addEventListener();
     }
@@ -46,25 +47,11 @@ public class RoomListView implements IView {
     }
 
     private void addEventListener() {
-        goHomeBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                IndexView.getInstance().show("home");
-            }
-        });
-        btn1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                rooms[1].show();
-            }
-        });
-        btn2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                rooms[2].show();
-            }
-        });
+        goHomeBtn.addActionListener(e -> IndexView.getInstance().show("home"));
+        btn1.addActionListener(e -> rooms[1].show());
+        btn2.addActionListener(e -> rooms[2].show());
     }
+
     public void printChat(MessageDTO messageDTO) {
         rooms[messageDTO.getRoomNumber()].printChat(messageDTO);
     }

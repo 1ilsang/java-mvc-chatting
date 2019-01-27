@@ -14,7 +14,6 @@ public class ChatService {
     private ViewService viewService = ViewService.getInstance();
     // FIXME Using patternString.yaml
     private MessageDTO messageDTO = null;
-    private boolean flag = false;
     private static final String LOCAL_HOST = "127.0.0.1";
     private static ChatService chatService = new ChatService();
     private Socket socket = null;
@@ -28,16 +27,21 @@ public class ChatService {
     }
 
     private class AcceptThread extends Thread {
+        private boolean flag;
+        AcceptThread() {
+            this.flag = true;
+        }
+        public void stopAcceptThread() {
+            this.flag = false;
+        }
+        // FIXME Socket closed Exception !
         @Override
         public void run() {
             try {
                 in = new ObjectInputStream(socket.getInputStream());
                 while(flag) {
-
                     // FIXME it's right?
                     messageDTO = (MessageDTO) in.readObject();
-                    System.out.println(messageDTO.getContents());
-
                     printView(messageDTO);
                 }
             } catch (IOException e) {
@@ -45,9 +49,6 @@ public class ChatService {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-//            catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
         }
     }
     private void printView(MessageDTO messageDTO) {
@@ -58,8 +59,6 @@ public class ChatService {
         try {
             socket = new Socket(LOCAL_HOST, 7777);
             out = new ObjectOutputStream(socket.getOutputStream());
-            flag = true;
-            // in 을 쓰레드로 어떻게 잘 뺄수 있을까?
             acceptThread = new AcceptThread();
             acceptThread.start();
         } catch (Exception e) {
@@ -68,7 +67,8 @@ public class ChatService {
     }
     public void disconnect() {
         try {
-            flag = false;
+            // TODO Send to FIN-ACK MessageDTO
+            acceptThread.stopAcceptThread();
             in.close();
             out.close();
             socket.close();

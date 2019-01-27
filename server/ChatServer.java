@@ -4,11 +4,14 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ChatServer {
-    static ArrayList<Socket> roomList;
+    private static ArrayList<ServerThread> roomList;
+    private static BufferedWriter bw;
+    private static Calendar date;
 
-    static class ServerThread extends Thread {
+    private static class ServerThread extends Thread {
         MessageDTO messageDTO = null;
         ObjectInputStream in = null;
         ObjectOutputStream out = null;
@@ -25,36 +28,52 @@ public class ChatServer {
             try {
                 while(true) {
                     messageDTO = (MessageDTO) in.readObject();
-                    System.out.println(messageDTO.getName() + ", " + messageDTO.getContents());
-//                    if(messageDTO.getFIN() == 1) break;
-//                for (int i = 0; i < roomList.size(); i++) {
-//                    out = new ObjectOutputStream(roomList.get(i).getOutputStream());
-                    out.writeObject(messageDTO);
-//                }
+                    bw.write("[" + date.getTime() + "] " + messageDTO.getName() + ": " + messageDTO.getContents() + "\n");
+                    bw.flush();
+
+                    for(ServerThread e: roomList) e.out.writeObject(messageDTO);
                 }
+            }catch (EOFException e) {
+
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                roomList.remove(this);
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public static void main(String[] args) throws IOException {
+        date = Calendar.getInstance();
         ServerSocket ss = null;
         roomList = new ArrayList<>();
+        bw = new BufferedWriter(new OutputStreamWriter(System.out));
         try {
             ss = new ServerSocket(7777);
-            System.out.println("Server is ready...");
+            System.out.println(">> Server is ready... << " + date.getTime());
             while (true) {
                 Socket s = ss.accept();
-                roomList.add(s);
-                System.out.println("client " + s.getInetAddress());
+                bw.write("["+ date.getTime()+ "] Client join: " + s.getInetAddress() + "\n");
+                bw.flush();
                 ServerThread t = new ServerThread(s);
+                roomList.add(t);
                 t.start();
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             ss.close();
+            bw.close();
         }
     }
 }
