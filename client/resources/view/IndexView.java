@@ -4,21 +4,21 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Index {
+public class IndexView {
     private String id;
-    private Home home = Home.getInstance();
-    private RoomList roomList = RoomList.getInstance();
-    private Register register = Register.getInstance();
+    private HomeView home = HomeView.getInstance();
+    private RoomListView roomList = RoomListView.getInstance();
+    private RegisterView register = RegisterView.getInstance();
 
-    private static Index main = new Index();
+    private static IndexView main = new IndexView();
 
     public static Frame frame;
 
-    public static Index getInstance() {
+    public static IndexView getInstance() {
         return main;
     }
 
-    private Index() {
+    private IndexView() {
         frame = new Frame();
         frame.addWindowListener(new WindowAdapter() {
             @Override

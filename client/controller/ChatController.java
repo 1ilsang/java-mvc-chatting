@@ -3,9 +3,9 @@ package controller;
 import dto.CommandDTO;
 import dto.MessageDTO;
 import service.ChatService;
+
 /**
- * ChatController :: Using Socket :: listen, connect, disconnect, send(1:N, 1:1)
- *          The actual operation is 'Service'
+ * ChatController :: Using Socket :: accept, connect, disconnect, send(1:N, 1:1)
  *
  * param pattern = Method handler
  *       rno = Target room(or user) number
@@ -24,11 +24,14 @@ public class ChatController implements IController{
         if(pattern.equals("disconnect")) {
             this.disconnect();
         } else if(pattern.equals("connect")) {
-            this.chatInit();
+            System.out.println("connect");
+            this.socketConnect();
         }
     }
     public void in(String pattern, CommandDTO commandDTO) {
+        // FIXME Constructor
         MessageDTO messageDTO = new MessageDTO(commandDTO.getRno(), commandDTO.getUserName(), commandDTO.getText());
+
         if(pattern.equals("sendBroadCast")) {
             this.sendBroadCast(messageDTO);
         } else if(pattern.equals("sendRno")) {
@@ -36,13 +39,13 @@ public class ChatController implements IController{
         }
     }
 
-    private void chatInit() {
+    private void socketConnect() {
         chatService.init();
     }
     private void sendBroadCast(MessageDTO messageDTO) {
         chatService.sendBroadCast(messageDTO);
     }
     private void disconnect(){
-        chatService.end();
+        chatService.disconnect();
     }
 }

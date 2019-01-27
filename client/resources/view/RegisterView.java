@@ -3,23 +3,21 @@ package resources.view;
 import controller.DispatcherController;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class Register implements IView {
-    private static Register register = new Register();
-    private Index idx = Index.getInstance();
+public class RegisterView implements IView {
+    private static RegisterView register = new RegisterView();
+    private IndexView idx = IndexView.getInstance();
     private DispatcherController dispatcherController = DispatcherController.getInstance();
 
     private Button registerBtn, back;
     private TextField id, pw;
     private Label cmdLabel;
 
-    public static Register getInstance() {
+    public static RegisterView getInstance() {
         return register;
     }
 
-    private Register() {
+    private RegisterView() {
 
     }
 
@@ -31,11 +29,12 @@ public class Register implements IView {
 
     private void init() {
         idx.frame.removeAll();
-        idx.frame.setTitle("Register");
+        idx.frame.setTitle("RegisterView");
         idx.frame.setLayout(new GridLayout(6, 0));
 
         id = new TextField();
         pw = new TextField();
+        pw.setEchoChar('*');
         registerBtn = new Button("Sign up");
         back = new Button("back");
         cmdLabel = new Label("1: ID, 2: PW");
@@ -56,15 +55,15 @@ public class Register implements IView {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
 //                dispatcherController.setUserName(id.getText());
-//                Index.getInstance().show("roomList");
+//                IndexView.getInstance().show("roomList");
 //            }
 //        });
         registerBtn.addActionListener(e -> {
-            dispatcherController.setUserName(id.getText());
-            Index.getInstance().show("roomList");
+//            dispatcherController.setUserName(id.getText());
+            IndexView.getInstance().show("roomList");
         });
         back.addActionListener(e -> {
-            Index.getInstance().show("home");
+            IndexView.getInstance().show("home");
         });
     }
 }

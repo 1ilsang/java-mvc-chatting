@@ -1,7 +1,7 @@
-import resources.view.Index;
+import resources.view.IndexView;
 
 public class ChatTest {
     public static void main(String[] args) {
-        Index index = Index.getInstance();
+        IndexView index = IndexView.getInstance();
     }
 }

@@ -1,33 +1,36 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import dto.MessageDTO;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
 public class ChatServer {
+    static ArrayList<Socket> roomList;
 
     static class ServerThread extends Thread {
-        BufferedReader in = null;
-        PrintWriter out = null;
+        MessageDTO messageDTO = null;
+        ObjectInputStream in = null;
+        ObjectOutputStream out = null;
         Socket socket = null;
-        ArrayList<Socket> roomList = new ArrayList<>();
 
         public ServerThread(Socket s) throws IOException {
             this.socket = s;
-            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out = new PrintWriter(s.getOutputStream(), true);
+            in = new ObjectInputStream(s.getInputStream());
+            out = new ObjectOutputStream(s.getOutputStream());
         }
 
         @Override
         public void run() {
-            String line;
             try {
-                while((line = in.readLine()) != null) {
-                    if(line.equalsIgnoreCase("Q")) break;
-                    System.out.println("client : " + line);
-                    out.println("Server : " + line);
+                while(true) {
+                    messageDTO = (MessageDTO) in.readObject();
+                    System.out.println(messageDTO.getName() + ", " + messageDTO.getContents());
+//                    if(messageDTO.getFIN() == 1) break;
+//                for (int i = 0; i < roomList.size(); i++) {
+//                    out = new ObjectOutputStream(roomList.get(i).getOutputStream());
+                    out.writeObject(messageDTO);
+//                }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -35,19 +38,23 @@ public class ChatServer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ServerSocket ss = null;
+        roomList = new ArrayList<>();
         try {
             ss = new ServerSocket(7777);
             System.out.println("Server is ready...");
-            while(true) {
+            while (true) {
                 Socket s = ss.accept();
+                roomList.add(s);
                 System.out.println("client " + s.getInetAddress());
                 ServerThread t = new ServerThread(s);
                 t.start();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            ss.close();
         }
     }
 }

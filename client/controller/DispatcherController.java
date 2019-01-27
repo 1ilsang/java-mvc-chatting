@@ -13,6 +13,10 @@ public class DispatcherController implements IController {
     private DispatcherController() {
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -22,7 +26,7 @@ public class DispatcherController implements IController {
     }
 
     public void in(String controller) {
-        // Do not use
+
     }
 
     public void in(String controller, String pattern) {
