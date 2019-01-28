@@ -2,15 +2,17 @@ package service;
 
 import dto.MessageDTO;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Need Thread-safe logic
  */
-public class ChatService {
+public class ChatService implements IChatService {
     private ViewService viewService = ViewService.getInstance();
     // FIXME Using patternString.yaml
     private MessageDTO messageDTO = null;
@@ -20,30 +22,38 @@ public class ChatService {
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
     private AcceptThread acceptThread = null;
+
     private ChatService() {
     }
+
     public static ChatService getInstance() {
         return chatService;
     }
 
     private class AcceptThread extends Thread {
         private boolean flag;
+
         AcceptThread() {
             this.flag = true;
         }
+
         public void stopAcceptThread() {
             this.flag = false;
         }
-        // FIXME Socket closed Exception !
+
         @Override
         public void run() {
             try {
                 in = new ObjectInputStream(socket.getInputStream());
-                while(flag) {
-                    // FIXME it's right?
+                while (flag) {
+                    // FIXME
                     messageDTO = (MessageDTO) in.readObject();
                     printView(messageDTO);
                 }
+            } catch (EOFException e) {
+                // TODO EOFException
+            } catch (SocketException e) {
+                // TODO SocketException
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -51,6 +61,7 @@ public class ChatService {
             }
         }
     }
+
     private void printView(MessageDTO messageDTO) {
         viewService.printChat(messageDTO);
     }
@@ -65,6 +76,7 @@ public class ChatService {
             e.printStackTrace();
         }
     }
+
     public void disconnect() {
         try {
             // TODO Send to FIN-ACK MessageDTO
@@ -76,6 +88,7 @@ public class ChatService {
             e.printStackTrace();
         }
     }
+
     public void sendBroadCast(MessageDTO messageDTO) {
         try {
             out.writeObject(messageDTO);
