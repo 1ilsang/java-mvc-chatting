@@ -27,7 +27,10 @@ public class RoomView implements IView {
     public void show() {
         init();
         addEventListener();
-        dispatcherController.in("chat", "connect");
+        CommandDTO commandDTO = new CommandDTO();
+        commandDTO.setRno(this.rno);
+        commandDTO.setUserName(dispatcherController.getUserName());
+        dispatcherController.in("chat", "connect", commandDTO);
     }
 
     public RoomView(int rno) {
@@ -68,7 +71,10 @@ public class RoomView implements IView {
         send.addActionListener(e -> sendMessage());
         leave.addActionListener(e -> {
             // TODO Front Controller
-            dispatcherController.in("chat", "disconnect");
+            CommandDTO commandDTO = new CommandDTO();
+            commandDTO.setRno(rno);
+            commandDTO.setUserName(dispatcherController.getUserName());
+            dispatcherController.in("chat", "disconnect", commandDTO);
             IndexView.getInstance().show("roomList");
         });
     }
@@ -84,6 +90,6 @@ public class RoomView implements IView {
         if (chatCnt == 4) prev = prev.substring(prev.indexOf("<br/>") + 5);
         else chatCnt++;
 
-        chatArea.setText("<html>" + prev + messageDTO.getName() + ": " + post + "<br/></html>");
+        chatArea.setText("<html>" + prev + post + "<br/></html>");
     }
 }

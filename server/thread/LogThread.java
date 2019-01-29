@@ -47,6 +47,7 @@ public class LogThread extends Thread {
 
     @Override
     public void run() {
+        // TODO 하루를 기준으로 저장 파일 자동으로 변하게
         String str;
         while (flag) {
             try {

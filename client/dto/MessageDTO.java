@@ -3,23 +3,24 @@ package dto;
 import java.io.Serializable;
 
 public class MessageDTO implements Serializable {
-    private int FIN;
+    private int FLAG;
     private int roomNumber;
     private String name;
     private String contents;
 
+    public MessageDTO() {}
     public MessageDTO(int roomNumber, String name, String contents) {
         this.roomNumber = roomNumber;
         this.name = name;
         this.contents = contents;
     }
 
-    public int getFIN() {
-        return FIN;
+    public int getFLAG() {
+        return FLAG;
     }
 
-    public void setFIN(int FIN) {
-        this.FIN = FIN;
+    public void setFLAG(int FLAG) {
+        this.FLAG = FLAG;
     }
 
     public int getRoomNumber() {

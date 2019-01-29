@@ -1,5 +1,6 @@
 package service;
 
+import dto.CommandDTO;
 import dto.MessageDTO;
 
 import java.io.EOFException;
@@ -69,19 +70,34 @@ public class ChatService implements IChatService {
         viewService.printChat(messageDTO);
     }
 
-    public void init() {
+    public void init(CommandDTO commandDTO) {
         try {
             socket = new Socket(LOCAL_HOST, 7777);
             out = new ObjectOutputStream(socket.getOutputStream());
             acceptThread = new AcceptThread();
             acceptThread.start();
+            MessageDTO messageDTO = new MessageDTO();
+            // SYN FLAG
+            messageDTO.setFLAG(1 << 5);
+            messageDTO.setRoomNumber(commandDTO.getRno());
+            messageDTO.setName(commandDTO.getUserName());
+            sendBroadCast(messageDTO);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void disconnect() {
+    public void disconnect(CommandDTO commandDTO) {
         try {
+            MessageDTO messageDTO = new MessageDTO();
+            // SYN FLAG
+            messageDTO.setFLAG(1 << 2);
+            messageDTO.setRoomNumber(commandDTO.getRno());
+            messageDTO.setName(commandDTO.getUserName());
+            messageDTO.setContents(":: System :: " + commandDTO.getUserName() + " 님이 나갔습니다!");
+            sendBroadCast(messageDTO);
+
             System.out.println("disconnect");
             acceptThread.stopAcceptThread();
             in.close();

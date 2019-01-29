@@ -10,11 +10,12 @@ import java.util.ArrayList;
 public class ChatServer {
     private static final String PORT = "7777";
     private static LogThread logThread;
-    private static ArrayList<SocketThread> socketList;
+    private static ArrayList[] roomList = new ArrayList[5];
 
     public static void main(String[] args) throws IOException {
+        for (int i = 0; i < 5; i++) roomList[i] = new ArrayList<SocketThread>();
+
         logThread = LogThread.getInstance();
-        socketList = new ArrayList<>();
         ServerSocket ss = null;
 
         try {
@@ -26,8 +27,7 @@ public class ChatServer {
             // FIXME how to break ?
             while (true) {
                 Socket s = ss.accept();
-                SocketThread t = new SocketThread(s, socketList);
-                socketList.add(t);
+                SocketThread t = new SocketThread(s, roomList);
                 t.start();
             }
         } catch (Exception e) {
