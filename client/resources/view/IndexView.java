@@ -5,7 +5,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class IndexView {
-    private String id;
     private HomeView home = HomeView.getInstance();
     private RoomListView roomList = RoomListView.getInstance();
     private RegisterView register = RegisterView.getInstance();

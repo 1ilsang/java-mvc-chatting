@@ -52,7 +52,8 @@ public class RoomView implements IView {
         idx.frame.setVisible(true);
     }
     private void sendMessage() {
-        if (inputArea.getText().equals("")) return;
+        // FIXME 35 이상일때 다이얼로그
+        if (inputArea.getText().equals("") || inputArea.getText().length() > 35) return;
         // TODO Functionalization this.
         CommandDTO commandDTO = new CommandDTO();
         commandDTO.setRno(rno);
@@ -73,10 +74,16 @@ public class RoomView implements IView {
     }
 
     public void printChat(MessageDTO messageDTO) {
-        String prev = chatArea.getText().replace("<html>", "").replace("</html>", "");
+        String prev = chatArea.getText()
+                .replace("<html>", "")
+                .replace("</html>", "");
+        String post = messageDTO.getContents()
+                .replace("<", " &lt ")
+                .replace(">", " &gt ");
+
         if (chatCnt == 4) prev = prev.substring(prev.indexOf("<br/>") + 5);
         else chatCnt++;
-        // XXX Important :: XSS :: You must block XSS.
-        chatArea.setText("<html>" + prev + messageDTO.getName() + ": " + messageDTO.getContents() + "<br/></html>");
+
+        chatArea.setText("<html>" + prev + messageDTO.getName() + ": " + post + "<br/></html>");
     }
 }

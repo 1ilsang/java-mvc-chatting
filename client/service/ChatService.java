@@ -47,6 +47,7 @@ public class ChatService implements IChatService {
                 in = new ObjectInputStream(socket.getInputStream());
                 while (flag) {
                     // FIXME
+                    sleep(100);
                     messageDTO = (MessageDTO) in.readObject();
                     printView(messageDTO);
                 }
@@ -57,6 +58,8 @@ public class ChatService implements IChatService {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -79,7 +82,7 @@ public class ChatService implements IChatService {
 
     public void disconnect() {
         try {
-            // TODO Send to FIN-ACK MessageDTO
+            System.out.println("disconnect");
             acceptThread.stopAcceptThread();
             in.close();
             out.close();

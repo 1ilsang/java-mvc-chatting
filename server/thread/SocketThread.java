@@ -11,17 +11,15 @@ import java.util.ArrayList;
 
 public class SocketThread extends Thread {
     private LogThread logThread = LogThread.getInstance();
-    private ArrayList<SocketThread> roomList;
-    private String threadName;
+    private ArrayList<SocketThread> socketList;
 
-    MessageDTO messageDTO = null;
-    ObjectInputStream in = null;
-    ObjectOutputStream out = null;
-    Socket socket = null;
+    private MessageDTO messageDTO = null;
+    private ObjectInputStream in = null;
+    private ObjectOutputStream out = null;
+    private Socket socket = null;
 
     public SocketThread(Socket s, ArrayList<SocketThread> list) throws IOException {
-        threadName = Thread.currentThread().getName();
-        roomList = list;
+        socketList = list;
         socket = s;
         in = new ObjectInputStream(s.getInputStream());
         out = new ObjectOutputStream(s.getOutputStream());
@@ -29,13 +27,14 @@ public class SocketThread extends Thread {
 
     @Override
     public void run() {
+        String threadName = Thread.currentThread().getName();
         try {
-            logThread.log(threadName+ " :: Socket Open " + socket.getInetAddress());
+            logThread.log(threadName + " :: Socket Open " + socket.getInetAddress());
             while (true) {
                 messageDTO = (MessageDTO) in.readObject();
                 logThread.log(threadName + " :: " + messageDTO.getName() + ": " + messageDTO.getContents());
 
-                for (SocketThread e : roomList) e.out.writeObject(messageDTO);
+                for (SocketThread e : socketList) e.out.writeObject(messageDTO);
             }
         } catch (EOFException e) {
 
@@ -43,7 +42,7 @@ public class SocketThread extends Thread {
             e.printStackTrace();
         } finally {
             logThread.log(threadName + " :: Socket Close - Leave - " + this.messageDTO.getName());
-            roomList.remove(this);
+            socketList.remove(this);
             try {
                 in.close();
             } catch (IOException e) {

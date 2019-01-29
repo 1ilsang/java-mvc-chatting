@@ -58,11 +58,6 @@ public class HomeView implements IView {
                 IndexView.getInstance().show("roomList");
             }
         });
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                IndexView.getInstance().show("register");
-            }
-        });
+        registerButton.addActionListener(e -> IndexView.getInstance().show("register"));
     }
 }
