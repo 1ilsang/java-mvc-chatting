@@ -26,9 +26,13 @@ public class ChatServer {
 
             // FIXME how to break ?
             while (true) {
-                Socket s = ss.accept();
-                SocketThread t = new SocketThread(s, roomList);
-                t.start();
+                try {
+                    Socket s = ss.accept();
+                    SocketThread t = new SocketThread(s, roomList);
+                    t.start();
+                } catch (EOFException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

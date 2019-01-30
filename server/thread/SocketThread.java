@@ -19,12 +19,13 @@ public class SocketThread extends Thread {
     private ObjectInputStream in = null;
     private ObjectOutputStream out = null;
     private Socket socket = null;
+    private ArrayList curRoom;
+    private String curUserName;
+    private int curRoomNumber;
 
     public SocketThread(Socket s, ArrayList[] roomList) throws IOException {
         this.socket = s;
         this.roomList = roomList;
-        this.in = new ObjectInputStream(s.getInputStream());
-        this.out = new ObjectOutputStream(s.getOutputStream());
     }
 
     @Override
@@ -32,10 +33,19 @@ public class SocketThread extends Thread {
         boolean isFInFlag;
         String threadName = Thread.currentThread().getName();
         try {
+            this.in = new ObjectInputStream(socket.getInputStream());
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             logThread.log(threadName + " :: Socket Open " + socket.getInetAddress());
             while (true) {
+                sleep(100);
                 messageDTO = (MessageDTO) in.readObject();
-                ArrayList curRoom = roomList[messageDTO.getRoomNumber()];
+                curRoom = roomList[messageDTO.getRoomNumber()];
+                curUserName = messageDTO.getName();
+                curRoomNumber = messageDTO.getRoomNumber();
 
                 if (!curRoom.contains(this)) curRoom.add(this);
                 isFInFlag = manufactureMessageDTO(threadName, messageDTO);
@@ -43,19 +53,17 @@ public class SocketThread extends Thread {
                 for (Object e : curRoom) ((SocketThread) e).out.writeObject(messageDTO);
                 if (isFInFlag) break;
             }
-        } catch (EOFException e) {
         } catch (SocketException e) {
+        } catch (EOFException e) {
+            socketCloseExceptionMessage(threadName);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             logThread.log(threadName + " :: Socket Close - Leave - " + this.messageDTO.getName());
             try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                out.close();
+                if (in != null) in.close();
+                if (out != null) out.close();
+                socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -67,12 +75,27 @@ public class SocketThread extends Thread {
         if (messageDTO.getFLAG() == SYK) {
             logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 방에 접속");
         } else if (messageDTO.getFLAG() == FIN) {
+            curRoom.remove(this);
             logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 방에서 떠남.");
-            roomList[this.messageDTO.getRoomNumber()].remove(this);
             isFin = true;
         } else {
-            logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + ": " + messageDTO.getContents());
+            logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getContents());
         }
         return isFin;
+    }
+
+    private void socketCloseExceptionMessage(String threadName) {
+        curRoom.remove(this);
+        logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 예외 강제종료");
+        MessageDTO messageDTO2 = new MessageDTO.Builder(curRoomNumber, curUserName)
+                .contents(" :: System :: " + curUserName + " 님이 나갔습니다!")
+                .build();
+        for (Object e : curRoom) {
+            try {
+                ((SocketThread) e).out.writeObject(messageDTO2);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 }
