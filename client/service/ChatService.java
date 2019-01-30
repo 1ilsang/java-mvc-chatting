@@ -16,7 +16,6 @@ import java.net.SocketException;
 public class ChatService implements IChatService {
     private ViewService viewService = ViewService.getInstance();
     // FIXME Using patternString.yaml
-    private MessageDTO messageDTO = null;
     private static final String LOCAL_HOST = "127.0.0.1";
     private static ChatService chatService = new ChatService();
     private Socket socket = null;
@@ -33,6 +32,7 @@ public class ChatService implements IChatService {
 
     private class AcceptThread extends Thread {
         private boolean flag;
+        private MessageDTO messageDTO = null;
 
         AcceptThread() {
             this.flag = true;
@@ -85,7 +85,6 @@ public class ChatService implements IChatService {
 
     public void disconnect(CommandDTO commandDTO) {
         try {
-            commandDTO.setText(":: System :: " + commandDTO.getUserName() + " 님이 나갔습니다!");
             sendBroadCast(commandDTO);
 
             acceptThread.stopAcceptThread();
@@ -98,18 +97,30 @@ public class ChatService implements IChatService {
     }
 
     public void sendBroadCast(CommandDTO commandDTO) {
-        MessageDTO messageDTO = new MessageDTO();
-        messageDTO.setRoomNumber(commandDTO.getRno());
-        messageDTO.setName(commandDTO.getUserName());
-        messageDTO.setContents(commandDTO.getText());
-
-        if(commandDTO.getAction().equals("disconnect")) messageDTO.setFLAG(1 << 2);
-        else if(commandDTO.getAction().equals("connect")) messageDTO.setFLAG(1 << 5);
-
+        MessageDTO messageDTO = commandToMessage(commandDTO);
         try {
             out.writeObject(messageDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private MessageDTO commandToMessage(CommandDTO commandDTO) {
+        int flag = 0;
+        if(commandDTO.getAction().equals("disconnect")) {
+            commandDTO.setText(":: System :: " + commandDTO.getUserName() + " 님이 나갔습니다!");
+            flag = 1 << 2;
+        }
+        else if(commandDTO.getAction().equals("connect")) {
+            commandDTO.setText(":: System :: " + commandDTO.getUserName() + " 님이 접속하셨습니다!");
+            flag = 1 << 5;
+        }
+
+        MessageDTO messageDTO = new MessageDTO.Builder(commandDTO.getRno(), commandDTO.getUserName())
+                .contents(commandDTO.getText())
+                .flag(flag)
+                .build();
+
+        return messageDTO;
     }
 }

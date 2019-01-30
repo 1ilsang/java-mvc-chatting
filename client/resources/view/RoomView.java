@@ -60,7 +60,7 @@ public class RoomView implements IView {
         // TODO Functionalization this.
         CommandDTO commandDTO = new CommandDTO();
         commandDTO.setRno(rno);
-        commandDTO.setText(inputArea.getText());
+        commandDTO.setText(dispatcherController.getUserName() + ": " + inputArea.getText());
         commandDTO.setUserName(dispatcherController.getUserName());
         dispatcherController.in("chat", "sendBroadCast", commandDTO);
         inputArea.setText("");
