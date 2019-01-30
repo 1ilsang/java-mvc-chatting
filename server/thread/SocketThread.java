@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class SocketThread extends Thread {
@@ -28,35 +29,22 @@ public class SocketThread extends Thread {
 
     @Override
     public void run() {
-        boolean endF = false;
+        boolean isFInFlag;
         String threadName = Thread.currentThread().getName();
         try {
             logThread.log(threadName + " :: Socket Open " + socket.getInetAddress());
             while (true) {
                 messageDTO = (MessageDTO) in.readObject();
-                if (!roomList[messageDTO.getRoomNumber()].contains(this)) {
-                    roomList[messageDTO.getRoomNumber()].add(this);
-                }
-                if (messageDTO.getFLAG() == SYK) {
-                    logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 방에 접속");
-                    messageDTO.setContents(":: System :: " + messageDTO.getName() + " 님이 접속하셨습니다!");
-                    messageDTO.setFLAG(1 >> 5);
-                } else if (messageDTO.getFLAG() == FIN) {
-                    logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 방에서 떠남.");
-                    messageDTO.setFLAG(1 >> 2);
-                    roomList[this.messageDTO.getRoomNumber()].remove(this);
-                    endF = true;
-                } else {
-                    logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + ": " + messageDTO.getContents());
-                    messageDTO.setContents(messageDTO.getName() + ": " + messageDTO.getContents());
-                }
-                for (Object e : roomList[messageDTO.getRoomNumber()]) {
-                    ((SocketThread) e).out.writeObject(messageDTO);
-                }
-                if (endF) break;
+                ArrayList curRoom = roomList[messageDTO.getRoomNumber()];
+
+                if (!curRoom.contains(this)) curRoom.add(this);
+                isFInFlag = setMsgDTO(threadName, messageDTO);
+
+                for (Object e : curRoom) ((SocketThread) e).out.writeObject(messageDTO);
+                if (isFInFlag) break;
             }
         } catch (EOFException e) {
-
+        } catch (SocketException e) {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -72,5 +60,23 @@ public class SocketThread extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean setMsgDTO(String threadName, MessageDTO messageDTO) {
+        boolean isFin = false;
+        if (messageDTO.getFLAG() == SYK) {
+            logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 방에 접속");
+            messageDTO.setContents(":: System :: " + messageDTO.getName() + " 님이 접속하셨습니다!");
+            messageDTO.setFLAG(1 >> 5);
+        } else if (messageDTO.getFLAG() == FIN) {
+            logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + " 유저가 방에서 떠남.");
+            messageDTO.setFLAG(1 >> 2);
+            roomList[this.messageDTO.getRoomNumber()].remove(this);
+            isFin = true;
+        } else {
+            logThread.log(threadName + " :: Room[" + messageDTO.getRoomNumber() + "] " + messageDTO.getName() + ": " + messageDTO.getContents());
+            messageDTO.setContents(messageDTO.getName() + ": " + messageDTO.getContents());
+        }
+        return isFin;
     }
 }

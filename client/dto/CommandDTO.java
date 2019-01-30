@@ -8,6 +8,19 @@ public class CommandDTO {
     private int rno;
     private String text;
     private String userName;
+    private String action;
+
+    public CommandDTO() {
+        this.action = "";
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public String getUserName() {
         return userName;

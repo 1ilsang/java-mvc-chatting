@@ -6,16 +6,19 @@ import service.ChatService;
 
 /**
  * ChatController :: Using Socket :: accept, connect, disconnect, send(1:N, 1:1)
- *
+ * <p>
  * param pattern = Method handler
- *       rno = Target room(or user) number
- *       *FIXME userName = id (Name and id are the same!)
- *       message = Chatting text
+ * rno = Target room(or user) number
+ * *FIXME userName = id (Name and id are the same!)
+ * message = Chatting text
  */
-public class ChatController implements IController{
+public class ChatController implements IController {
     private static ChatController chatController = new ChatController();
     private ChatService chatService = ChatService.getInstance();
-    private ChatController() {}
+
+    private ChatController() {
+    }
+
     public static ChatController getInstance() {
         return chatController;
     }
@@ -23,18 +26,19 @@ public class ChatController implements IController{
     public void in(String pattern) {
 
     }
-    public void in(String pattern, CommandDTO commandDTO) {
-        // FIXME Constructor
-        MessageDTO messageDTO = new MessageDTO(commandDTO.getRno(), commandDTO.getUserName(), commandDTO.getText());
 
-        if(pattern.equals("sendBroadCast")) {
-            this.sendBroadCast(messageDTO);
-        } else if(pattern.equals("sendRno")) {
+    public void in(String pattern, CommandDTO commandDTO) {
+        if (pattern.equals("sendBroadCast")) {
+            this.sendBroadCast(commandDTO);
+        } else if (pattern.equals("sendRno")) {
             // TODO 1:1
-        } else if(pattern.equals("connect")) {
+        } else if (pattern.equals("connect")) {
+            commandDTO.setAction("connect");
             System.out.println("connect");
             this.socketConnect(commandDTO);
-        } else if(pattern.equals("disconnect")) {
+        } else if (pattern.equals("disconnect")) {
+            commandDTO.setAction("disconnect");
+            System.out.println("disconnect");
             this.disconnect(commandDTO);
         }
     }
@@ -42,10 +46,12 @@ public class ChatController implements IController{
     private void socketConnect(CommandDTO commandDTO) {
         chatService.init(commandDTO);
     }
-    private void sendBroadCast(MessageDTO messageDTO) {
-        chatService.sendBroadCast(messageDTO);
+
+    private void sendBroadCast(CommandDTO commandDTO) {
+        chatService.sendBroadCast(commandDTO);
     }
-    private void disconnect(CommandDTO commandDTO){
+
+    private void disconnect(CommandDTO commandDTO) {
         chatService.disconnect(commandDTO);
     }
 }

@@ -76,13 +76,8 @@ public class ChatService implements IChatService {
             out = new ObjectOutputStream(socket.getOutputStream());
             acceptThread = new AcceptThread();
             acceptThread.start();
-            MessageDTO messageDTO = new MessageDTO();
-            // SYN FLAG
-            messageDTO.setFLAG(1 << 5);
-            messageDTO.setRoomNumber(commandDTO.getRno());
-            messageDTO.setName(commandDTO.getUserName());
-            sendBroadCast(messageDTO);
 
+            sendBroadCast(commandDTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,15 +85,9 @@ public class ChatService implements IChatService {
 
     public void disconnect(CommandDTO commandDTO) {
         try {
-            MessageDTO messageDTO = new MessageDTO();
-            // SYN FLAG
-            messageDTO.setFLAG(1 << 2);
-            messageDTO.setRoomNumber(commandDTO.getRno());
-            messageDTO.setName(commandDTO.getUserName());
-            messageDTO.setContents(":: System :: " + commandDTO.getUserName() + " 님이 나갔습니다!");
-            sendBroadCast(messageDTO);
+            commandDTO.setText(":: System :: " + commandDTO.getUserName() + " 님이 나갔습니다!");
+            sendBroadCast(commandDTO);
 
-            System.out.println("disconnect");
             acceptThread.stopAcceptThread();
             in.close();
             out.close();
@@ -108,7 +97,15 @@ public class ChatService implements IChatService {
         }
     }
 
-    public void sendBroadCast(MessageDTO messageDTO) {
+    public void sendBroadCast(CommandDTO commandDTO) {
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setRoomNumber(commandDTO.getRno());
+        messageDTO.setName(commandDTO.getUserName());
+        messageDTO.setContents(commandDTO.getText());
+
+        if(commandDTO.getAction().equals("disconnect")) messageDTO.setFLAG(1 << 2);
+        else if(commandDTO.getAction().equals("connect")) messageDTO.setFLAG(1 << 5);
+
         try {
             out.writeObject(messageDTO);
         } catch (Exception e) {

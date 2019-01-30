@@ -1,6 +1,6 @@
 package controller;
 
-public class LoginController implements IController{
+public class EventController implements IController {
     @Override
     public void in(String pattern) {
 
