@@ -11,6 +11,7 @@ import javax.swing.text.View;
 public class DispatcherController implements IController {
     private String userName;
     private ViewController viewController = ViewController.getInstance();
+    private LoginController loginController = LoginController.getInstance();
     private static DispatcherController dispatcherController = new DispatcherController();
     private ChatController chatController = ChatController.getInstance();
 
@@ -37,6 +38,7 @@ public class DispatcherController implements IController {
 
         if(controller.equals("/chat")) chatController.in(commandDTO);
         else if(controller.equals("/view")) viewController.in(commandDTO);
+        else if(controller.equals("/login")) loginController.in(commandDTO);
     }
 }
 

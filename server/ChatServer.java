@@ -1,6 +1,6 @@
-import dto.MessageDTO;
 import thread.LogThread;
-import thread.SocketThread;
+import thread.ChatSocketThread;
+import thread.LoginSocketThread;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -13,7 +13,11 @@ public class ChatServer {
     private static ArrayList[] roomList = new ArrayList[5];
 
     public static void main(String[] args) throws IOException {
-        for (int i = 0; i < 5; i++) roomList[i] = new ArrayList<SocketThread>();
+
+        LoginSocketThread loginSocketThread = new LoginSocketThread();
+        loginSocketThread.start();
+
+        for (int i = 0; i < 5; i++) roomList[i] = new ArrayList<ChatSocketThread>();
 
         logThread = LogThread.getInstance();
         ServerSocket ss = null;
@@ -28,7 +32,7 @@ public class ChatServer {
             while (true) {
                 try {
                     Socket s = ss.accept();
-                    SocketThread t = new SocketThread(s, roomList);
+                    ChatSocketThread t = new ChatSocketThread(s, roomList);
                     t.start();
                 } catch (EOFException e) {
                     e.printStackTrace();

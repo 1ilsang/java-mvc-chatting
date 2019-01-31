@@ -27,7 +27,7 @@ public class RoomListView implements IView {
     public void show() {
         init();
         // TODO Create dynamic size
-        for (int i = 0; i < 5; i++) rooms[i] = new RoomView(i);
+        for (int i = 0; i < 4; i++) rooms[i] = new RoomView(i);
         addEventListener();
     }
 

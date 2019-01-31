@@ -15,8 +15,9 @@ public class AcceptThread extends Thread {
     private ViewService viewService = ViewService.getInstance();
 
     // FIXME Using patternString.yaml
-    private static final String LOCAL_HOST = "127.0.0.1";
-    //    private static final String REMOTE_HOST = "35.243.106.143";
+//    private static final String LOCAL_HOST = "127.0.0.1";
+//    private static final String REMOTE_HOST = "35.243.106.143"; // GCP
+    private static final String REMOTE_HOST = "70.12.245.35";   // Wifi
     private boolean flag;
     private MessageDTO messageDTO = null;
     private ObjectInputStream in = null;
@@ -40,7 +41,7 @@ public class AcceptThread extends Thread {
     @Override
     public void run() {
         try {
-            this.socket = new Socket(LOCAL_HOST, 7777);
+            this.socket = new Socket(REMOTE_HOST, 7777);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
 

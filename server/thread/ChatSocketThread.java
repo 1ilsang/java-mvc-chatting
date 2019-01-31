@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-public class SocketThread extends Thread {
+public class ChatSocketThread extends Thread {
     private int SYK = 1 << 5;
     private int FIN = 1 << 2;
     private LogThread logThread = LogThread.getInstance();
@@ -23,7 +23,7 @@ public class SocketThread extends Thread {
     private String curUserName;
     private int curRoomNumber;
 
-    public SocketThread(Socket s, ArrayList[] roomList) throws IOException {
+    public ChatSocketThread(Socket s, ArrayList[] roomList) throws IOException {
         this.socket = s;
         this.roomList = roomList;
     }
@@ -50,7 +50,7 @@ public class SocketThread extends Thread {
                 if (!curRoom.contains(this)) curRoom.add(this);
                 isFInFlag = manufactureMessageDTO(threadName, messageDTO);
 
-                for (Object e : curRoom) ((SocketThread) e).out.writeObject(messageDTO);
+                for (Object e : curRoom) ((ChatSocketThread) e).out.writeObject(messageDTO);
                 if (isFInFlag) break;
             }
         } catch (SocketException e) {
@@ -92,7 +92,7 @@ public class SocketThread extends Thread {
                 .build();
         for (Object e : curRoom) {
             try {
-                ((SocketThread) e).out.writeObject(messageDTO2);
+                ((ChatSocketThread) e).out.writeObject(messageDTO2);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
