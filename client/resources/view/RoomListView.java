@@ -1,5 +1,7 @@
 package resources.view;
 
+import controller.DispatcherController;
+import dto.CommandDTO;
 import dto.MessageDTO;
 
 import java.awt.*;
@@ -7,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class RoomListView implements IView {
+    private DispatcherController dispatcherController = DispatcherController.getInstance();
     private static RoomListView roomList = new RoomListView();
     private IndexView idx = IndexView.getInstance();
     private RoomView[] rooms = new RoomView[5];
@@ -29,6 +32,7 @@ public class RoomListView implements IView {
     }
 
     private void init() {
+        dispatcherController = DispatcherController.getInstance();
         // TODO 서버에서 데이터 가져와야함.현재 존재하는 채팅방.
 
         idx.frame.removeAll();
@@ -51,7 +55,11 @@ public class RoomListView implements IView {
     }
 
     private void addEventListener() {
-        goHomeBtn.addActionListener(e -> IndexView.getInstance().show("home"));
+        goHomeBtn.addActionListener(e -> {
+            CommandDTO commandDTO = new CommandDTO();
+            commandDTO.setUrl("/view/home");
+            dispatcherController.in(commandDTO);
+        });
         btn1.addActionListener(e -> rooms[1].show());
         btn2.addActionListener(e -> rooms[2].show());
         btn3.addActionListener(e -> rooms[3].show());

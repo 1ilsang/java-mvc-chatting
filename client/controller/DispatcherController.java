@@ -22,6 +22,7 @@ public class DispatcherController implements IController {
     }
 
     public void setUserName(String userName) {
+        System.out.println(userName);
         this.userName = userName;
     }
 

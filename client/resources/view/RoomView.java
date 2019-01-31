@@ -31,7 +31,7 @@ public class RoomView implements IView {
         commandDTO.setRno(this.rno);
         commandDTO.setUrl("/chat/connect");
         commandDTO.setUserName(dispatcherController.getUserName());
-//        dispatcherController.in("chat", "connect", commandDTO);
+
         dispatcherController.in(commandDTO);
     }
 
@@ -40,8 +40,10 @@ public class RoomView implements IView {
     }
 
     private void init() {
+        dispatcherController = DispatcherController.getInstance();
+
         idx.frame.removeAll();
-        idx.frame.setTitle("RoomView" + rno);
+        idx.frame.setTitle("RoomView " + rno);
 
         send = new Button("send");
         leave = new Button("leave");
@@ -57,8 +59,9 @@ public class RoomView implements IView {
         idx.frame.setVisible(true);
     }
     private void sendMessage() {
-        // FIXME 35 이상일때 다이얼로그
+        // TODO 35 이상일때 다이얼로그
         if (inputArea.getText().equals("") || inputArea.getText().length() > 35) return;
+
         // TODO Functionalization this.
         CommandDTO commandDTO = new CommandDTO();
         commandDTO.setRno(rno);
@@ -67,6 +70,7 @@ public class RoomView implements IView {
         commandDTO.setUserName(dispatcherController.getUserName());
 
         dispatcherController.in(commandDTO);
+
         inputArea.setText("");
     }
 
@@ -81,7 +85,8 @@ public class RoomView implements IView {
             commandDTO.setUserName(dispatcherController.getUserName());
 
             dispatcherController.in(commandDTO);
-            IndexView.getInstance().show("roomList");
+            commandDTO.setUrl("/view/roomList");
+            dispatcherController.in(commandDTO);
         });
     }
 

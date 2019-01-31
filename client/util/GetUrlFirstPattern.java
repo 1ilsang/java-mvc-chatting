@@ -19,9 +19,4 @@ public class GetUrlFirstPattern {
         commandDTO.setUrl(commandDTO.getUrl().substring(endIdx));
         return pattern;
     }
-    public static int getIntPattern(CommandDTO commandDTO) {
-        int endIdx = commandDTO.getUrl().indexOf("/", 1);
-        if(endIdx == -1) endIdx = commandDTO.getUrl().length();
-        return endIdx;
-    }
 }

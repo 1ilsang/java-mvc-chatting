@@ -1,13 +1,15 @@
 package resources.view;
 
+import controller.DispatcherController;
+import controller.ViewController;
+import dto.CommandDTO;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class IndexView {
-    private HomeView home = HomeView.getInstance();
-    private RoomListView roomList = RoomListView.getInstance();
-    private RegisterView register = RegisterView.getInstance();
+    private DispatcherController dispatcherController = DispatcherController.getInstance();
 
     private static IndexView main = new IndexView();
 
@@ -28,14 +30,8 @@ public class IndexView {
         frame.setLayout(new GridLayout(5, 0));
         frame.setSize(300, 300);
         frame.setResizable(false);
-        // FIXME Controller
-        show("home");
-    }
 
-    void show(String s) {
-        // 컨트롤러로 분리
-        if(s.equals("home")) home.show();
-        else if(s.equals("roomList")) roomList.show();
-        else if(s.equals("register")) register.show();
+        CommandDTO commandDTO = new CommandDTO("/view/home");
+        dispatcherController.in(commandDTO);
     }
 }

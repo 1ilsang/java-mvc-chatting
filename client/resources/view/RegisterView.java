@@ -1,6 +1,7 @@
 package resources.view;
 
 import controller.DispatcherController;
+import dto.CommandDTO;
 
 import java.awt.*;
 
@@ -28,6 +29,8 @@ public class RegisterView implements IView {
     }
 
     private void init() {
+        dispatcherController = DispatcherController.getInstance();
+
         idx.frame.removeAll();
         idx.frame.setTitle("RegisterView");
         idx.frame.setLayout(new GridLayout(6, 0));
@@ -50,20 +53,14 @@ public class RegisterView implements IView {
     }
 
     private void addEventListener() {
-        // Before Lambda expression
-//        registerBtn.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                dispatcherController.setUserName(id.getText());
-//                IndexView.getInstance().show("roomList");
-//            }
-//        });
+        CommandDTO commandDTO = new CommandDTO();
         registerBtn.addActionListener(e -> {
-//            dispatcherController.setUserName(id.getText());
-            IndexView.getInstance().show("roomList");
+            commandDTO.setUrl("/view/roomList");
+            dispatcherController.in(commandDTO);
         });
         back.addActionListener(e -> {
-            IndexView.getInstance().show("home");
+            commandDTO.setUrl("/view/home");
+            dispatcherController.in(commandDTO);
         });
     }
 }

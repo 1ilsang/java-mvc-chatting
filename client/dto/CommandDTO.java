@@ -12,10 +12,21 @@ public class CommandDTO {
     private String url;
 
     public CommandDTO() {
+        this.text = "";
+        this.userName = "";
         this.action = "";
         this.url = "";
     }
-
+    public CommandDTO(String path) {
+        this();
+        this.url = path;
+    }
+    public void clear(){
+        this.text = "";
+        this.userName = "";
+        this.action = "";
+        this.url = "";
+    }
     public String getUrl() {
         return url;
     }

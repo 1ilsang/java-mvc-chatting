@@ -1,6 +1,7 @@
 package resources.view;
 
 import controller.DispatcherController;
+import dto.CommandDTO;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +15,7 @@ public class HomeView implements IView {
     private Label titleLabel, textLabel;
     private TextField id, pw;
 
-    public static HomeView getInstance(){
+    public static HomeView getInstance() {
         return home;
     }
 
@@ -28,6 +29,8 @@ public class HomeView implements IView {
     }
 
     private void init() {
+        dispatcherController = DispatcherController.getInstance();
+
         idx.frame.removeAll();
         idx.frame.setTitle("Login");
         idx.frame.setLayout(new GridLayout(6, 0));
@@ -50,14 +53,17 @@ public class HomeView implements IView {
 
         idx.frame.setVisible(true);
     }
+
     private void addEventListener() {
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispatcherController.setUserName(id.getText());
-                IndexView.getInstance().show("roomList");
-            }
+        CommandDTO commandDTO = new CommandDTO();
+        loginButton.addActionListener(e -> {
+            commandDTO.setUrl("/view/roomList");
+            dispatcherController.setUserName(id.getText());
+            dispatcherController.in(commandDTO);
         });
-        registerButton.addActionListener(e -> IndexView.getInstance().show("register"));
+        registerButton.addActionListener(e -> {
+            commandDTO.setUrl("/view/register");
+            dispatcherController.in(commandDTO);
+        });
     }
 }
