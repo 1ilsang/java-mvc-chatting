@@ -10,12 +10,16 @@ public class CommandDTO {
     private String userName;
     private String action;
     private String url;
+    private String pw;
+    private boolean flag;
 
     public CommandDTO() {
+        this.flag = false;
         this.text = "";
         this.userName = "";
         this.action = "";
         this.url = "";
+        this.pw = "";
     }
     public CommandDTO(String path) {
         this();
@@ -27,6 +31,23 @@ public class CommandDTO {
         this.action = "";
         this.url = "";
     }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+
+    public String getPw() {
+        return pw;
+    }
+
+    public void setPw(String pw) {
+        this.pw = pw;
+    }
+
     public String getUrl() {
         return url;
     }

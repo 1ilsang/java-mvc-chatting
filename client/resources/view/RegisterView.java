@@ -12,7 +12,7 @@ public class RegisterView implements IView {
 
     private Button registerBtn, back;
     private TextField id, pw;
-    private Label cmdLabel;
+    private Label cmdLabel, stateLabel;
 
     public static RegisterView getInstance() {
         return register;
@@ -27,6 +27,11 @@ public class RegisterView implements IView {
         init();
         addEventListener();
     }
+    public void show(CommandDTO commandDTO) {
+        init();
+        stateLabel.setText(commandDTO.getText());
+        addEventListener();
+    }
 
     private void init() {
         dispatcherController = DispatcherController.getInstance();
@@ -37,6 +42,8 @@ public class RegisterView implements IView {
 
         id = new TextField();
         pw = new TextField();
+        stateLabel = new Label();
+        stateLabel.setAlignment(Label.CENTER);
         pw.setEchoChar('*');
         registerBtn = new Button("Sign up");
         back = new Button("back");
@@ -48,6 +55,7 @@ public class RegisterView implements IView {
         idx.frame.add(pw);
         idx.frame.add(registerBtn);
         idx.frame.add(back);
+        idx.frame.add(stateLabel);
 
         idx.frame.setVisible(true);
     }
@@ -55,7 +63,9 @@ public class RegisterView implements IView {
     private void addEventListener() {
         CommandDTO commandDTO = new CommandDTO();
         registerBtn.addActionListener(e -> {
-            commandDTO.setUrl("/view/roomList");
+            commandDTO.setUrl("/login/signUp");
+            commandDTO.setUserName(id.getText());
+            commandDTO.setPw(pw.getText());
             dispatcherController.in(commandDTO);
         });
         back.addActionListener(e -> {
