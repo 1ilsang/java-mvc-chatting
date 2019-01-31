@@ -1,12 +1,16 @@
 package controller;
 
 import dto.CommandDTO;
+import util.GetUrlFirstPattern;
+
+import javax.swing.text.View;
 
 /**
  * Branching controller :: All requests go through this.
  */
 public class DispatcherController implements IController {
     private String userName;
+    private ViewController viewController = ViewController.getInstance();
     private static DispatcherController dispatcherController = new DispatcherController();
     private ChatController chatController = ChatController.getInstance();
 
@@ -25,20 +29,13 @@ public class DispatcherController implements IController {
         return dispatcherController;
     }
 
-    public void in(String controller) {
+    @Override
+    public void in(CommandDTO commandDTO) {
+        String controller = GetUrlFirstPattern.getStringPattern(commandDTO);
+        System.out.println("DispatcherController: " + controller);
 
-    }
-
-    public void in(String controller, String pattern) {
-        if (controller.equals("chat")) {
-            chatController.in(pattern);
-        }
-    }
-
-    public void in(String controller, String pattern, CommandDTO cmdDTO) {
-        if (controller.equals("chat")) {
-            chatController.in(pattern, cmdDTO);
-        }
+        if(controller.equals("/chat")) chatController.in(commandDTO);
+        else if(controller.equals("/view")) viewController.in(commandDTO);
     }
 }
 

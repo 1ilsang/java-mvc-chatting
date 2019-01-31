@@ -1,5 +1,7 @@
 package controller;
 
+import dto.CommandDTO;
+
 public interface IController {
-    void in(String pattern);
+    void in(CommandDTO commandDTO);
 }

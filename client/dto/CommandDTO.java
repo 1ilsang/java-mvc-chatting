@@ -9,9 +9,19 @@ public class CommandDTO {
     private String text;
     private String userName;
     private String action;
+    private String url;
 
     public CommandDTO() {
         this.action = "";
+        this.url = "";
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getAction() {

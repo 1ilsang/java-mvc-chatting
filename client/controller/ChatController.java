@@ -3,6 +3,7 @@ package controller;
 import dto.CommandDTO;
 import dto.MessageDTO;
 import service.ChatService;
+import util.GetUrlFirstPattern;
 
 /**
  * ChatController :: Using Socket :: accept, connect, disconnect, send(1:N, 1:1)
@@ -23,20 +24,20 @@ public class ChatController implements IController {
         return chatController;
     }
 
-    public void in(String pattern) {
+    @Override
+    public void in(CommandDTO commandDTO) {
+        String pattern = GetUrlFirstPattern.getStringPattern(commandDTO);
+        System.out.println("ChatController: " + pattern);
 
-    }
-
-    public void in(String pattern, CommandDTO commandDTO) {
-        if (pattern.equals("sendBroadCast")) {
+        if (pattern.equals("/sendBroadCast")) {
             this.sendBroadCast(commandDTO);
         } else if (pattern.equals("sendRno")) {
             // TODO 1:1
-        } else if (pattern.equals("connect")) {
+        } else if (pattern.equals("/connect")) {
             commandDTO.setAction("connect");
             System.out.println("connect");
             this.socketConnect(commandDTO);
-        } else if (pattern.equals("disconnect")) {
+        } else if (pattern.equals("/disconnect")) {
             commandDTO.setAction("disconnect");
             System.out.println("disconnect");
             this.disconnect(commandDTO);
