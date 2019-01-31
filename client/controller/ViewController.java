@@ -18,7 +18,8 @@ public class ViewController implements IController {
     @Override
     public void in(CommandDTO commandDTO) {
         String pattern = GetUrlFirstPattern.getStringPattern(commandDTO);
+        commandDTO.setUrl(pattern);
         System.out.println("ViewController: " + pattern);
-        viewService.showFrame(pattern);
+        viewService.showFrame(commandDTO);
     }
 }
