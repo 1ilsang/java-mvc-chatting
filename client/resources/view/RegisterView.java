@@ -37,7 +37,7 @@ public class RegisterView implements IView {
         dispatcherController = DispatcherController.getInstance();
 
         idx.frame.removeAll();
-        idx.frame.setTitle("RegisterView");
+        idx.frame.setTitle("Register");
         idx.frame.setLayout(new GridLayout(6, 0));
 
         id = new TextField();

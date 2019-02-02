@@ -57,6 +57,7 @@ public class HomeView implements IView {
     private void addEventListener() {
         CommandDTO commandDTO = new CommandDTO();
         loginButton.addActionListener(e -> {
+            // TODO Sign In
             commandDTO.setUrl("/view/roomList");
             dispatcherController.setUserName(id.getText());
             dispatcherController.in(commandDTO);

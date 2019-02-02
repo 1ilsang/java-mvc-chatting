@@ -32,7 +32,7 @@ public class LoginService {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
             UserVO userVO = new UserVO();
-            userVO.setName(commandDTO.getUserName());
+            userVO.setUserName(commandDTO.getUserName());
             userVO.setPw(commandDTO.getPw());
 
             LoginDTO sendDTO = new LoginDTO();

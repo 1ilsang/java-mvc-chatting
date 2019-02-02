@@ -5,22 +5,22 @@ import java.io.Serializable;
 public class UserVO implements Serializable {
     // c10n COUNT ALL USERS
     private static int TUNO = 0;
-    private String name;
+    private String userName;
     private int uno;
     private String pw;
 
     public UserVO() {
         this.uno = ++TUNO;
-        this.name = "";
+        this.userName = "";
         this.pw = "";
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getUno() {
@@ -42,7 +42,7 @@ public class UserVO implements Serializable {
     @Override
     public String toString() {
         return "UserVO{" +
-                "name='" + name + '\'' +
+                "name='" + userName + '\'' +
                 ", uno=" + uno +
                 ", pw='" + pw + '\'' +
                 '}';

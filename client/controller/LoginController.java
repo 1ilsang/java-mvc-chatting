@@ -22,6 +22,8 @@ public class LoginController implements IController{
         if(pattern.equals("/signIn")) {
             if(loginService.signIn(commandDTO)) {
                 // 로그인 정상처리(/view/home)
+//                dispatcherController.setUserName(name);
+
             } else {
                 // 로그인 비정상(dialog)
             }
@@ -33,8 +35,6 @@ public class LoginController implements IController{
             commandDTO.clear();
 
             if(loginDTO.isAccess()) {
-                // XXX userName 통일이 시급함. dispatcher 에서 관리할건지 commandDTO에서 관리할건지?
-                // XXX 또한 ID, NAME 혼용이 고통스럽다 내일은 이거부터 해결할 것.
                 dispatcherController.setUserName(name);
                 commandDTO.setUserName(name);
                 commandDTO.setUrl("/view/roomList");

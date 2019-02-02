@@ -18,28 +18,28 @@ import java.io.Serializable;
 public class MessageDTO implements Serializable {
     private int FLAG;
     private int roomNumber;
-    private String name;
+    private String userName;
     private String contents;
 
     private MessageDTO() {}
     private MessageDTO(Builder builder) {
         this.FLAG = builder.FLAG;
         this.roomNumber = builder.roomNumber;
-        this.name = builder.name;
+        this.userName = builder.userName;
         this.contents = builder.contents;
     }
 
     public static class Builder implements IBuilderDTO {
         // Essential
         private final int roomNumber;
-        private final String name;
+        private final String userName;
         // Selective(MUST Initialization)
         private int FLAG            = 0;
         private String contents     = "";
 
         public Builder(int roomNumber, String name) {
             this.roomNumber = roomNumber;
-            this.name = name;
+            this.userName = name;
         }
         public Builder flag(int n) {
             this.FLAG = n;
@@ -65,7 +65,7 @@ public class MessageDTO implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return userName;
     }
 
     public String getContents() {

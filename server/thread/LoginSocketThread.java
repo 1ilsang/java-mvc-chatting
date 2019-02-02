@@ -43,7 +43,7 @@ public class LoginSocketThread extends Thread {
                 LoginDTO getDTO = (LoginDTO) in.readObject();
                 LoginDTO sendDTO = null;
 
-                String name = getDTO.getUserVO().getName();
+                String name = getDTO.getUserVO().getUserName();
 
                 // Noti LoginService
                 if (getDTO.getAction().equals("/signUp")) {
