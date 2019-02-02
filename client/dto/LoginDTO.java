@@ -9,6 +9,7 @@ public class LoginDTO implements Serializable {
     private UserVO userVO;
     private boolean access;
     private String message;
+    private String url;
 
     public LoginDTO() {
         this.action = "";
@@ -21,6 +22,14 @@ public class LoginDTO implements Serializable {
         this();
         this.access = access;
         this.message = message;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getAction() {

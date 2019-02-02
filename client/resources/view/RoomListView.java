@@ -24,7 +24,7 @@ public class RoomListView implements IView {
     }
 
     @Override
-    public void show() {
+    public void show(CommandDTO commandDTO) {
         init();
         // TODO Create dynamic size
         for (int i = 0; i < 4; i++) rooms[i] = new RoomView(i);
@@ -33,8 +33,8 @@ public class RoomListView implements IView {
 
     private void init() {
         dispatcherController = DispatcherController.getInstance();
-        // TODO 서버에서 데이터 가져와야함.현재 존재하는 채팅방.
 
+        // TODO 서버에서 데이터 가져와야함.현재 존재하는 채팅방.
         idx.frame.removeAll();
         idx.frame.setTitle("RoomListView");
         idx.frame.setLayout(new GridLayout(6, 0));
@@ -55,14 +55,16 @@ public class RoomListView implements IView {
     }
 
     private void addEventListener() {
+        CommandDTO commandDTO = new CommandDTO();
+        commandDTO.setUserName(dispatcherController.getUserName());
+
         goHomeBtn.addActionListener(e -> {
-            CommandDTO commandDTO = new CommandDTO();
             commandDTO.setUrl("/view/home");
             dispatcherController.in(commandDTO);
         });
-        btn1.addActionListener(e -> rooms[1].show());
-        btn2.addActionListener(e -> rooms[2].show());
-        btn3.addActionListener(e -> rooms[3].show());
+        btn1.addActionListener(e -> rooms[1].show(commandDTO));
+        btn2.addActionListener(e -> rooms[2].show(commandDTO));
+        btn3.addActionListener(e -> rooms[3].show(commandDTO));
     }
 
     public void printChat(MessageDTO messageDTO) {

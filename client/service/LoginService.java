@@ -9,7 +9,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class LoginService {
-    private final static String LOCAL_HOST = "127.0.0.1";
+//        private final static String REMOTE_HOST = "127.0.0.1";
+    private static final String REMOTE_HOST = "35.243.106.143"; // GCP
     private final static String PORT = "6666";
 
     private LoginService() {
@@ -21,13 +22,24 @@ public class LoginService {
         return loginService;
     }
 
-    public boolean signIn(CommandDTO commandDTO) {
-        return true;
+    public LoginDTO signIn(CommandDTO commandDTO) {
+        commandDTO.setUrl("/view/home");
+        return getPermission(commandDTO, "/signIn");
     }
 
     public LoginDTO signUp(CommandDTO commandDTO) {
+        commandDTO.setUrl("/view/register");
+        return getPermission(commandDTO, "/signUp");
+    }
+
+    private LoginDTO getPermission(CommandDTO commandDTO, String action) {
+        LoginDTO sendDTO = new LoginDTO();
+        sendDTO.setMessage("서버가 연결되어 있지 않습니다!");
+        sendDTO.setAccess(false);
+        sendDTO.setUrl("/view/home");
+
         try {
-            Socket socket = new Socket(LOCAL_HOST, Integer.parseInt(PORT));
+            Socket socket = new Socket(REMOTE_HOST, Integer.parseInt(PORT));
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
@@ -35,20 +47,21 @@ public class LoginService {
             userVO.setUserName(commandDTO.getUserName());
             userVO.setPw(commandDTO.getPw());
 
-            LoginDTO sendDTO = new LoginDTO();
-            sendDTO.setAction("/signUp");
+            sendDTO.setAction(action);
             sendDTO.setUserVO(userVO);
 
             out.writeObject(sendDTO);
             out.flush();
 
             LoginDTO getDTO = (LoginDTO) in.readObject();
-            System.out.println("Login " + getDTO.isAccess() + ", " + getDTO.getMessage());
+
+            getDTO.setUrl(commandDTO.getUrl());
+            System.out.println("Login " + action + ": " + getDTO.isAccess() + ", " + getDTO.getMessage());
 
             return getDTO;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return sendDTO;
     }
 }

@@ -23,10 +23,6 @@ public class RegisterView implements IView {
     }
 
     @Override
-    public void show() {
-        init();
-        addEventListener();
-    }
     public void show(CommandDTO commandDTO) {
         init();
         stateLabel.setText(commandDTO.getText());

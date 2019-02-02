@@ -25,11 +25,8 @@ public class ViewService {
     public void showFrame(CommandDTO commandDTO) {
         String s = commandDTO.getUrl();
         System.out.println("showFrame: " + s);
-        if(s.equals("/home")) home.show();
-        else if(s.equals("/roomList")) roomList.show();
-        else if(s.equals("/register")) {
-            if(commandDTO.isFlag()) register.show(commandDTO);
-            else register.show();
-        }
+        if(s.equals("/home")) home.show(commandDTO);
+        else if(s.equals("/roomList")) roomList.show(commandDTO);
+        else if(s.equals("/register")) register.show(commandDTO);
     }
 }

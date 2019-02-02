@@ -32,11 +32,12 @@ public class LoginSocketThread extends Thread {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(Integer.parseInt(PORT));
-            logThread.log(threadName + " Login Socket Open");
+            logThread.log("Login Thread: " + Thread.currentThread().getName());
+            logThread.log(">> Login Thread is ready... <<");
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                logThread.log("Login Request :: " + socket.getInetAddress());
+                logThread.log(threadName + " :: Login Request :: " + socket.getInetAddress());
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 
@@ -60,7 +61,7 @@ public class LoginSocketThread extends Thread {
                         sendDTO = new LoginDTO(true, LOGIN_SUCCESS);
                     } else sendDTO = new LoginDTO(false, LOGIN_FAIL);
                 }
-                logThread.log("Login " + sendDTO.isAccess() + " " + sendDTO.getMessage());
+                logThread.log(threadName + " :: Login " + sendDTO.isAccess() + " " + sendDTO.getMessage());
 
                 out.writeObject(sendDTO);
                 out.flush();

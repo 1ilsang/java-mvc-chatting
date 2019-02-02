@@ -24,13 +24,12 @@ public class RoomView implements IView {
     private int chatCnt;
 
     @Override
-    public void show() {
+    public void show(CommandDTO commandDTO) {
         init();
         addEventListener();
-        CommandDTO commandDTO = new CommandDTO();
+
         commandDTO.setRno(this.rno);
         commandDTO.setUrl("/chat/connect");
-        commandDTO.setUserName(dispatcherController.getUserName());
 
         dispatcherController.in(commandDTO);
     }

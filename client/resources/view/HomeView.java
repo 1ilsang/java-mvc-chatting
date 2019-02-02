@@ -3,6 +3,7 @@ package resources.view;
 import controller.DispatcherController;
 import dto.CommandDTO;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,7 @@ public class HomeView implements IView {
     private static HomeView home = new HomeView();
     private IndexView idx = IndexView.getInstance();
     private Button loginButton, registerButton;
-    private Label titleLabel, textLabel;
+    private Label titleLabel, stateLabel;
     private TextField id, pw;
 
     public static HomeView getInstance() {
@@ -23,8 +24,9 @@ public class HomeView implements IView {
     }
 
     @Override
-    public void show() {
+    public void show(CommandDTO commandDTO) {
         init();
+        stateLabel.setText(commandDTO.getText());
         addEventListener();
     }
 
@@ -40,7 +42,8 @@ public class HomeView implements IView {
         id = new TextField();
         pw = new TextField();
         pw.setEchoChar('*');
-        textLabel = new Label();
+        stateLabel = new Label();
+        stateLabel.setAlignment(Label.CENTER);
         titleLabel = new Label("로그인이 필요한 서비스 입니다.");
         titleLabel.setAlignment(Label.CENTER);
 
@@ -49,7 +52,7 @@ public class HomeView implements IView {
         idx.frame.add(pw);
         idx.frame.add(loginButton);
         idx.frame.add(registerButton);
-        idx.frame.add(textLabel);
+        idx.frame.add(stateLabel);
 
         idx.frame.setVisible(true);
     }
@@ -57,9 +60,9 @@ public class HomeView implements IView {
     private void addEventListener() {
         CommandDTO commandDTO = new CommandDTO();
         loginButton.addActionListener(e -> {
-            // TODO Sign In
-            commandDTO.setUrl("/view/roomList");
-            dispatcherController.setUserName(id.getText());
+            commandDTO.setUserName(id.getText());
+            commandDTO.setPw(pw.getText());
+            commandDTO.setUrl("/login/signIn");
             dispatcherController.in(commandDTO);
         });
         registerButton.addActionListener(e -> {
