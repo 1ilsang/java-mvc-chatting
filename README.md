@@ -22,7 +22,7 @@ Java Chatting Application
 
 한눈에 보는 전체 구성
 ---
-<img src="./markdown/img/simplePackageDiagram.png" />
+<img src="markdown/img/simplePackageDiagram.png" />
 
 - Client: 
   - 모든 요청은 `DispatcherController`를 거치며 `HandlerMapping` 객체가 해당 비지니스의 적절한 `Controller`를 찾아 메서드를 실행한다.
