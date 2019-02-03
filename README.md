@@ -14,15 +14,21 @@ Java Chatting Application
 
 더 나은 코드를 위해 많은 코멘트 부탁드립니다!
 
+> Readme 작성중...
+
 샘플 화면
 ---
-~~AWT로 작성되었기 때문에 윈도우에서는 참혹한 뷰를 보셔야 합니다.~~
+AWT로 작성되었기 때문에 윈도우에서는 참혹한 뷰를 보셔야 합니다(...)
+- 초기 화면:
+<img src="markdown/img/sampleView1.png" width=500 />
+- 채팅창 화면:
+<img src="markdown/img/sampleView2.png" width=500 />
 
 - [Read more!](#)
 
 한눈에 보는 전체 구성
 ---
-<img src="markdown/img/simplePackageDiagram.png" />
+<img src="markdown/img/simplePackageDiagram.png" width=1000 />
 
 - Client: 
   - 모든 요청은 `DispatcherController`를 거치며 `HandlerMapping` 객체가 해당 비지니스의 적절한 `Controller`를 찾아 메서드를 실행한다.
@@ -44,24 +50,32 @@ Java Chatting Application
 
 - [Read more!](#)
 
-어떻게 시작하나요?
+어떻게 실행하나요?
 ---
-- [로컬 환경에서 실행하기](#)
+- 로컬 환경에서 실행하기
+  - client 폴더과 server 폴더를 각각 *root*로 잡아 ChatTest, ChatServer 클래스에서 main 실행.
+  - *중요* `server/resources/` 폴더에 있는 `chatLog.dat` 파일을 `chatLog.txt`로 변경해주셔야 합니다.
+  - 로컬환경이므로 `REMOTE_HOST`가 `127.0.0.1`인지 꼭 확인.
+
 - [클라우드 환경(GCP)으로 서비스 해보기](#)
 
 클래스 단위로 알아보기
 ---
 - client
-  - 
-  - 
-  - 
-  - 
+  - Main
+  - Controller
+  - DTO
+  - Domain
+  - View
+  - Service
+  - Thread
+  - util
   
 - server
-  - 
-  -
+  - Main
+  - Thread
+  - DTO/Domain 은 client 와 동일.
   
-
 맺으며
 ---
 - [Come to my blog!](https://1ilsang.blog.me)
