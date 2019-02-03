@@ -1,17 +1,14 @@
 package resources.view;
 
 import controller.DispatcherController;
-import dto.CommandDTO;
+import dto.ModelAndView;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class HomeView implements IView {
     private DispatcherController dispatcherController = DispatcherController.getInstance();
     private static HomeView home = new HomeView();
-    private IndexView idx = IndexView.getInstance();
+    private InitializationView idx = InitializationView.getInstance();
     private Button loginButton, registerButton;
     private Label titleLabel, stateLabel;
     private TextField id, pw;
@@ -24,9 +21,9 @@ public class HomeView implements IView {
     }
 
     @Override
-    public void show(CommandDTO commandDTO) {
+    public void show(ModelAndView modelAndView) {
         init();
-        stateLabel.setText(commandDTO.getText());
+        stateLabel.setText(modelAndView.getText());
         addEventListener();
     }
 
@@ -58,16 +55,16 @@ public class HomeView implements IView {
     }
 
     private void addEventListener() {
-        CommandDTO commandDTO = new CommandDTO();
+        ModelAndView modelAndView = new ModelAndView();
         loginButton.addActionListener(e -> {
-            commandDTO.setUserName(id.getText());
-            commandDTO.setPw(pw.getText());
-            commandDTO.setUrl("/login/signIn");
-            dispatcherController.in(commandDTO);
+            modelAndView.setUserName(id.getText());
+            modelAndView.setPw(pw.getText());
+            modelAndView.setUrl("/login/signIn");
+            dispatcherController.in(modelAndView);
         });
         registerButton.addActionListener(e -> {
-            commandDTO.setUrl("/view/register");
-            dispatcherController.in(commandDTO);
+            modelAndView.setUrl("/view/register");
+            dispatcherController.in(modelAndView);
         });
     }
 }

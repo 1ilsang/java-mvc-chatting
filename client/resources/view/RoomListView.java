@@ -1,18 +1,15 @@
 package resources.view;
 
 import controller.DispatcherController;
-import dto.CommandDTO;
-import dto.MessageDTO;
+import dto.ModelAndView;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class RoomListView implements IView {
     private DispatcherController dispatcherController = DispatcherController.getInstance();
     private static RoomListView roomList = new RoomListView();
-    private IndexView idx = IndexView.getInstance();
-    private RoomView[] rooms = new RoomView[5];
+    private InitializationView idx = InitializationView.getInstance();
+    public RoomView[] rooms;
     private Button btn1, btn2, btn3, goHomeBtn;
     private Label emptyLabel;
 
@@ -21,13 +18,15 @@ public class RoomListView implements IView {
     }
 
     private RoomListView() {
+        rooms = new RoomView[5];
+        for (int i = 0; i < 4; i++) rooms[i] = new RoomView(i);
     }
 
     @Override
-    public void show(CommandDTO commandDTO) {
+    public void show(ModelAndView modelAndView) {
+        roomList = getInstance();
         init();
         // TODO Create dynamic size
-        for (int i = 0; i < 4; i++) rooms[i] = new RoomView(i);
         addEventListener();
     }
 
@@ -55,19 +54,15 @@ public class RoomListView implements IView {
     }
 
     private void addEventListener() {
-        CommandDTO commandDTO = new CommandDTO();
-        commandDTO.setUserName(dispatcherController.getUserName());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setUserName(dispatcherController.getUserName());
 
         goHomeBtn.addActionListener(e -> {
-            commandDTO.setUrl("/view/home");
-            dispatcherController.in(commandDTO);
+            modelAndView.setUrl("/view/home");
+            dispatcherController.in(modelAndView);
         });
-        btn1.addActionListener(e -> rooms[1].show(commandDTO));
-        btn2.addActionListener(e -> rooms[2].show(commandDTO));
-        btn3.addActionListener(e -> rooms[3].show(commandDTO));
-    }
-
-    public void printChat(MessageDTO messageDTO) {
-        rooms[messageDTO.getRoomNumber()].printChat(messageDTO);
+        btn1.addActionListener(e -> rooms[1].show(modelAndView));
+        btn2.addActionListener(e -> rooms[2].show(modelAndView));
+        btn3.addActionListener(e -> rooms[3].show(modelAndView));
     }
 }

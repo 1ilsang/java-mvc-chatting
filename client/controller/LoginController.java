@@ -1,6 +1,6 @@
 package controller;
 
-import dto.CommandDTO;
+import dto.ModelAndView;
 import dto.LoginDTO;
 import service.LoginService;
 import util.GetUrlFirstPattern;
@@ -13,31 +13,33 @@ public class LoginController implements IController{
     }
     private static LoginController loginController = new LoginController();
     private LoginController() {}
+
     @Override
-    public void in(CommandDTO commandDTO) {
+    public ModelAndView in(ModelAndView modelAndView) {
         dispatcherController = DispatcherController.getInstance();
-        String pattern = GetUrlFirstPattern.getStringPattern(commandDTO);
+
+        String pattern = GetUrlFirstPattern.getStringPattern(modelAndView);
         System.out.println("LoginController: " + pattern);
         LoginDTO loginDTO = null;
 
         if(pattern.equals("/signIn")) {
-            loginDTO = loginService.signIn(commandDTO);
+            loginDTO = loginService.signIn(modelAndView);
         } else if(pattern.equals("/signUp")) {
-            loginDTO = loginService.signUp(commandDTO);
+            loginDTO = loginService.signUp(modelAndView);
         }
 
-        String name = commandDTO.getUserName();
-        commandDTO.clear();
+        String name = modelAndView.getUserName();
+        modelAndView.clear();
 
         if(loginDTO.isAccess()) {
             dispatcherController.setUserName(name);
-            commandDTO.setUserName(name);
-            commandDTO.setUrl("/view/roomList");
-            dispatcherController.in(commandDTO);
+            modelAndView.setUserName(name);
+            modelAndView.setUrl("/roomList");
         } else {
-            commandDTO.setText(loginDTO.getMessage());
-            commandDTO.setUrl(loginDTO.getUrl());
-            dispatcherController.in(commandDTO);
+            modelAndView.setText(loginDTO.getMessage());
+            modelAndView.setUrl(loginDTO.getUrl());
         }
+
+        return modelAndView;
     }
 }

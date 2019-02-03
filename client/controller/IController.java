@@ -1,7 +1,7 @@
 package controller;
 
-import dto.CommandDTO;
+import dto.ModelAndView;
 
 public interface IController {
-    void in(CommandDTO commandDTO);
+    ModelAndView in(ModelAndView modelAndView);
 }

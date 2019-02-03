@@ -1,19 +1,17 @@
 package controller;
 
-import dto.CommandDTO;
-import util.GetUrlFirstPattern;
-
-import javax.swing.text.View;
+import dto.ModelAndView;
+import resources.view.IView;
+import util.HandlerMapping;
+import util.View;
+import util.ViewResolver;
 
 /**
  * Branching controller :: All requests go through this.
  */
-public class DispatcherController implements IController {
+public class DispatcherController {
     private String userName;
-    private ViewController viewController = ViewController.getInstance();
-    private LoginController loginController = LoginController.getInstance();
     private static DispatcherController dispatcherController = new DispatcherController();
-    private ChatController chatController = ChatController.getInstance();
 
     private DispatcherController() {
     }
@@ -31,14 +29,13 @@ public class DispatcherController implements IController {
         return dispatcherController;
     }
 
-    @Override
-    public void in(CommandDTO commandDTO) {
-        String controller = GetUrlFirstPattern.getStringPattern(commandDTO);
+    public void in(ModelAndView modelAndView) {
+        IController controller = HandlerMapping.getController(modelAndView);
         System.out.println("DispatcherController: " + controller);
+        modelAndView = controller.in(modelAndView);
 
-        if(controller.equals("/chat")) chatController.in(commandDTO);
-        else if(controller.equals("/view")) viewController.in(commandDTO);
-        else if(controller.equals("/login")) loginController.in(commandDTO);
+        IView view = ViewResolver.getView(modelAndView);
+        if(view != null) View.showFrame(view, modelAndView);
     }
 }
 

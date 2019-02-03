@@ -1,7 +1,10 @@
-import resources.view.IndexView;
+import controller.DispatcherController;
+import dto.ModelAndView;
 
 public class ChatTest {
     public static void main(String[] args) {
-        IndexView index = IndexView.getInstance();
+        DispatcherController dispatcherController = DispatcherController.getInstance();
+        ModelAndView modelAndView = new ModelAndView("/view/index");
+        dispatcherController.in(modelAndView);
     }
 }

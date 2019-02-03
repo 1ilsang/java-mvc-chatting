@@ -4,7 +4,7 @@ package dto;
  * FIXME 모든 요청 데이터를 여기다 담는데 더 좋은 방법은 없을까?
  * This is like a 'Request model object'
  */
-public class CommandDTO {
+public class ModelAndView {
     private int rno;
     private String text;
     private String userName;
@@ -13,7 +13,7 @@ public class CommandDTO {
     private String pw;
     private boolean flag;
 
-    public CommandDTO() {
+    public ModelAndView() {
         this.flag = false;
         this.text = "";
         this.userName = "";
@@ -21,7 +21,7 @@ public class CommandDTO {
         this.url = "";
         this.pw = "";
     }
-    public CommandDTO(String path) {
+    public ModelAndView(String path) {
         this();
         this.url = path;
     }
@@ -30,6 +30,8 @@ public class CommandDTO {
         this.userName = "";
         this.action = "";
         this.url = "";
+        this.pw = "";
+        this.flag = false;
     }
 
     public boolean isFlag() {

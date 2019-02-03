@@ -1,13 +1,13 @@
 package resources.view;
 
 import controller.DispatcherController;
-import dto.CommandDTO;
+import dto.ModelAndView;
 
 import java.awt.*;
 
 public class RegisterView implements IView {
     private static RegisterView register = new RegisterView();
-    private IndexView idx = IndexView.getInstance();
+    private InitializationView idx = InitializationView.getInstance();
     private DispatcherController dispatcherController = DispatcherController.getInstance();
 
     private Button registerBtn, back;
@@ -23,9 +23,9 @@ public class RegisterView implements IView {
     }
 
     @Override
-    public void show(CommandDTO commandDTO) {
+    public void show(ModelAndView modelAndView) {
         init();
-        stateLabel.setText(commandDTO.getText());
+        stateLabel.setText(modelAndView.getText());
         addEventListener();
     }
 
@@ -57,16 +57,16 @@ public class RegisterView implements IView {
     }
 
     private void addEventListener() {
-        CommandDTO commandDTO = new CommandDTO();
+        ModelAndView modelAndView = new ModelAndView();
         registerBtn.addActionListener(e -> {
-            commandDTO.setUrl("/login/signUp");
-            commandDTO.setUserName(id.getText());
-            commandDTO.setPw(pw.getText());
-            dispatcherController.in(commandDTO);
+            modelAndView.setUrl("/login/signUp");
+            modelAndView.setUserName(id.getText());
+            modelAndView.setPw(pw.getText());
+            dispatcherController.in(modelAndView);
         });
         back.addActionListener(e -> {
-            commandDTO.setUrl("/view/home");
-            dispatcherController.in(commandDTO);
+            modelAndView.setUrl("/view/home");
+            dispatcherController.in(modelAndView);
         });
     }
 }

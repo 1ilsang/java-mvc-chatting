@@ -1,14 +1,11 @@
 package resources.view;
 
 import controller.DispatcherController;
-import dto.CommandDTO;
+import dto.ModelAndView;
 import dto.MessageDTO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 /**
  * This can be multiple objects.(2019/01/27 - 2 Rooms)
@@ -16,7 +13,7 @@ import java.util.Arrays;
  */
 public class RoomView implements IView {
     private DispatcherController dispatcherController = DispatcherController.getInstance();
-    private IndexView idx = IndexView.getInstance();
+    private InitializationView idx = InitializationView.getInstance();
     private Button send, leave;
     private TextField inputArea;
     private JLabel chatArea;
@@ -24,14 +21,18 @@ public class RoomView implements IView {
     private int chatCnt;
 
     @Override
-    public void show(CommandDTO commandDTO) {
-        init();
-        addEventListener();
+    public void show(ModelAndView modelAndView) {
+        if(modelAndView.getAction().equals("/print")) {
+            printChat(modelAndView);
+        } else {
+            init();
+            addEventListener();
 
-        commandDTO.setRno(this.rno);
-        commandDTO.setUrl("/chat/connect");
+            modelAndView.setRno(this.rno);
+            modelAndView.setUrl("/chat/connect");
 
-        dispatcherController.in(commandDTO);
+            dispatcherController.in(modelAndView);
+        }
     }
 
     public RoomView(int rno) {
@@ -40,7 +41,7 @@ public class RoomView implements IView {
 
     private void init() {
         dispatcherController = DispatcherController.getInstance();
-
+        chatCnt = 0;
         idx.frame.removeAll();
         idx.frame.setTitle("RoomView " + rno);
 
@@ -57,43 +58,39 @@ public class RoomView implements IView {
 
         idx.frame.setVisible(true);
     }
-    private void sendMessage() {
+    private void sendMessage(ModelAndView modelAndView) {
         // TODO 35 이상일때 다이얼로그
         if (inputArea.getText().equals("") || inputArea.getText().length() > 35) return;
 
-        // TODO Functionalization this.
-        CommandDTO commandDTO = new CommandDTO();
-        commandDTO.setRno(rno);
-        commandDTO.setUrl("/chat/sendBroadCast");
-        commandDTO.setText(dispatcherController.getUserName() + ": " + inputArea.getText());
-        commandDTO.setUserName(dispatcherController.getUserName());
+        modelAndView.setUrl("/chat/sendBroadCast");
+        modelAndView.setText(dispatcherController.getUserName() + ": " + inputArea.getText());
 
-        dispatcherController.in(commandDTO);
+        dispatcherController.in(modelAndView);
 
         inputArea.setText("");
     }
 
     private void addEventListener() {
-        inputArea.addActionListener(e -> sendMessage());
-        send.addActionListener(e -> sendMessage());
-        leave.addActionListener(e -> {
-            // TODO Front Controller
-            CommandDTO commandDTO = new CommandDTO();
-            commandDTO.setRno(rno);
-            commandDTO.setUrl("/chat/disconnect");
-            commandDTO.setUserName(dispatcherController.getUserName());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setRno(rno);
+        modelAndView.setUserName(dispatcherController.getUserName());
 
-            dispatcherController.in(commandDTO);
-            commandDTO.setUrl("/view/roomList");
-            dispatcherController.in(commandDTO);
+        inputArea.addActionListener(e -> sendMessage(modelAndView));
+        send.addActionListener(e -> sendMessage(modelAndView));
+        leave.addActionListener(e -> {
+            modelAndView.setUrl("/chat/disconnect");
+
+            dispatcherController.in(modelAndView);
+            modelAndView.setUrl("/view/roomList");
+            dispatcherController.in(modelAndView);
         });
     }
 
-    public void printChat(MessageDTO messageDTO) {
+    private void printChat(ModelAndView modelAndView) {
         String prev = chatArea.getText()
                 .replace("<html>", "")
                 .replace("</html>", "");
-        String post = messageDTO.getContents()
+        String post = modelAndView.getText()
                 .replace("<", " &lt ")
                 .replace(">", " &gt ");
 

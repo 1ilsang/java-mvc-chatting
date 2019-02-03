@@ -2,6 +2,9 @@ package domain;
 
 import java.io.Serializable;
 
+/**
+ *  TODO VO 객체인데 변경가능함. 좀더 생각해보자. DTO?
+ */
 public class UserVO implements Serializable {
     // c10n COUNT ALL USERS
     private static int TUNO = 0;

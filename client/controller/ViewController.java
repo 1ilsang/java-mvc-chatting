@@ -1,6 +1,6 @@
 package controller;
 
-import dto.CommandDTO;
+import dto.ModelAndView;
 import service.ViewService;
 import util.GetUrlFirstPattern;
 
@@ -16,10 +16,10 @@ public class ViewController implements IController {
     }
 
     @Override
-    public void in(CommandDTO commandDTO) {
-        String pattern = GetUrlFirstPattern.getStringPattern(commandDTO);
-        commandDTO.setUrl(pattern);
+    public ModelAndView in(ModelAndView modelAndView) {
+        String pattern = GetUrlFirstPattern.getStringPattern(modelAndView);
+        modelAndView.setUrl(pattern);
         System.out.println("ViewController: " + pattern);
-        viewService.showFrame(commandDTO);
+        return modelAndView;
     }
 }

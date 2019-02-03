@@ -1,14 +1,14 @@
 package service;
 
-import dto.CommandDTO;
-import thread.AcceptThread;
+import dto.ModelAndView;
+import thread.ChatAcceptThread;
 
 /**
  * Need Thread-safe logic
  */
-public class ChatService implements IChatService {
+public class ChatService {
     private static ChatService chatService = new ChatService();
-    AcceptThread acceptThread = null;
+    private ChatAcceptThread chatAcceptThread = null;
 
     private ChatService() {
     }
@@ -17,20 +17,20 @@ public class ChatService implements IChatService {
         return chatService;
     }
 
-    public void init(CommandDTO commandDTO) {
+    public void init(ModelAndView modelAndView) {
         try {
-            acceptThread = new AcceptThread(commandDTO);
-            acceptThread.start();
+            chatAcceptThread = new ChatAcceptThread(modelAndView);
+            chatAcceptThread.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void disconnect(CommandDTO commandDTO) {
-        acceptThread.disconnect(commandDTO);
+    public void disconnect(ModelAndView modelAndView) {
+        chatAcceptThread.disconnect(modelAndView);
     }
 
-    public void sendBroadCast(CommandDTO commandDTO) {
-        acceptThread.sendBroadCast(commandDTO);
+    public void sendBroadCast(ModelAndView modelAndView) {
+        chatAcceptThread.sendBroadCast(modelAndView);
     }
 }

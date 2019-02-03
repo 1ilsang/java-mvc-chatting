@@ -1,7 +1,7 @@
 package resources.view;
 
-import dto.CommandDTO;
+import dto.ModelAndView;
 
 public interface IView {
-    void show(CommandDTO commandDTO);
+    void show(ModelAndView modelAndView);
 }
