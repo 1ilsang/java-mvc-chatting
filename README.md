@@ -97,12 +97,13 @@ Commit 로그에 코드와 함께 자세하게 찍혀있습니다.
 - [클라우드 환경(GCP)으로 서비스 해보기](markdown/index/Gcp.md)
   - GCP Console 로 들어간다.
   - VM 인스턴스를 생성한다.
-  - Client/Server 를 jar 파일로 만든다.
+  - Server 를 jar 파일로 만든다.
   - ssh 키를 만든다.
   - gcp 에 추가해준다.
   - scp 를 통해 VM에 jar 파일을 보낸다.
-  - 서버실행. ```java -jar 파일명.jar```
   - 채팅포트 `7777`과 로그인포트 `6666`을 열어준다.
+  - 서버실행. ```java -jar 파일명.jar```
+  - Client 를 jar 파일로 만든다.(REMOTE_HOST 설정)
   - client jar 파일을 배포한다.(더 해보기: exe 파일로 변환)
   - 재밌게 채팅한다!
 
