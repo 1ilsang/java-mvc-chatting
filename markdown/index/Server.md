@@ -57,7 +57,9 @@ Log Thread
         }
     }
 ```
-- `queue`에 로그 처리가 쌓이면 순차적으로 로그를 찍고 파일에 저장한다.
+- `queue`에 로그가 쌓이면 순차적으로 로그를 찍고 파일에 저장한다.
+
+<img src="../img/serverlog.gif" width=600>
 
 Login Thread
 ---
@@ -117,7 +119,7 @@ public class LoginSocketThread extends Thread {
     }
 }
 ```
-- `HashMap`을 활용해 로그인을 간단하게 처리했다.(맵에 유저객체가 있다면 로그인한 상태다)
+- `HashMap`을 활용해 로그인을 간단하게 처리했다.(맵에 유저객체가 있다면 존재하는 회원)
 - 그러므로 서버가 다운되면 모든 로그인 정보를 잃어버린다.
 
 Chatting Thread

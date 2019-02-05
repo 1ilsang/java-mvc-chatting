@@ -84,7 +84,7 @@ Commit 로그에 코드와 함께 자세하게 찍혀있습니다.
   - `ChatRoomSocketThread`는 클라이언트의 요청소켓을 받아 각 소켓마다 `ChatSocketThread`를 파생시킨다.
   - `ChatSocketThread` 객체는 클라이언트의 소켓을 분석해 채팅방별로 관리해 적절하게 메시지를 뿌려준다.
 
-- [Read more!](markdown/index/Serfver.md)
+- [Read more!](markdown/index/Server.md)
 <br/>
 
 어떻게 실행하나요?
@@ -125,10 +125,17 @@ Commit 로그에 코드와 함께 자세하게 찍혀있습니다.
   
 맺으며
 ---
-1. 코딩도 어렵지만 문서화가 더 어려웠다.
-2. 초반 설계가 정말 어려웠다. 관점 분리가 특히 어려웠다.
-3. 취업하고싶다.
-4. [Come to my Blog!](https://1ilsang.blog.me)
+- 코딩도 어렵지만 문서화가 더 어려웠다.
+- 초반 설계가 정말 어려웠다. 관점 분리가 특히 어려웠다.
+- TODOLIST
+  - [ ] MSA 환경으로 업그레이드
+  - [ ] 중복 로그인 방지
+  - [ ] 파일 log 배치처리 및 자동화
+  - [ ] 채팅방 동적 생성
+  - [ ] 모든 상수 필드 외부파일로 빼거나 클래스화
+  - [ ] 채팅방 입장시 태그가 잠깐 보이는 문제 해결
+- 취업하고싶다.
+- [Come to my Blog!](https://1ilsang.blog.me)
 
 License
 ---

@@ -32,14 +32,6 @@ public class ChatAcceptThread extends Thread {
         this.modelAndView = modelAndView;
     }
 
-    private void stopAcceptThread() {
-        // c10n 이거 대체 왜 안되는것 ?
-        // FIXME flag 로 run while 멈추는게 안된다. 그냥 에러뜨면서 탈출됨.
-        // HACK
-//            System.out.println("break!");
-        this.flag = false;
-    }
-
     @Override
     public void run() {
         dispatcherController = DispatcherController.getInstance();
@@ -86,7 +78,6 @@ public class ChatAcceptThread extends Thread {
 
     public void disconnect(ModelAndView modelAndView) {
         sendBroadCast(modelAndView);
-        stopAcceptThread();
     }
 
     public void sendBroadCast(ModelAndView modelAndView) {

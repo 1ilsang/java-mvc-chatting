@@ -35,11 +35,6 @@ public class LogThread extends Thread {
         return logThread;
     }
 
-    public void stopThis() {
-        log("Server is down...");
-        this.flag = false;
-    }
-
     public void log(String str) {
         queue.add(str);
     }

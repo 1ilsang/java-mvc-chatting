@@ -140,3 +140,142 @@ Login Service
 - DTO 객체에 In/Out 값들을 담아 교환한다.
 - 통신이 끝나면 마무리한다.
 - `return` 을 통해 `LoginController`로 값을 던진다.
+
+Message DTO
+---
+```
+public class MessageDTO implements Serializable {
+    private int FLAG;
+    private int roomNumber;
+    private String userName;
+    private String contents;
+
+    private MessageDTO() {}
+    private MessageDTO(Builder builder) {
+        this.FLAG = builder.FLAG;
+        this.roomNumber = builder.roomNumber;
+        this.userName = builder.userName;
+        this.contents = builder.contents;
+    }
+
+    public static class Builder implements IBuilderDTO {
+        // Essential
+        private final int roomNumber;
+        private final String userName;
+        // Selective(MUST Initialization)
+        private int FLAG            = 0;
+        private String contents     = "";
+
+        public Builder(int roomNumber, String name) {
+            this.roomNumber = roomNumber;
+            this.userName = name;
+        }
+        public Builder flag(int n) {
+            this.FLAG = n;
+            return this;
+        }
+        public Builder contents(String contents) {
+            this.contents = contents;
+            return this;
+        }
+
+        @Override
+        public MessageDTO build() {
+            return new MessageDTO(this);
+        }
+    }
+```
+- Client 와 Server 간 통시에서 반드시 필요한 필드들을 강제하고 이뮤터블하게 해주기 위해 `builder pattern`사용.
+- 멀티쓰레드 환경에서 혹시모를 객체동기화문제(setter)를 사전차단. 한 번의 함수실행으로 다 되도록 고려.
+
+RoomView
+---
+```
+public class RoomView implements IView {
+    ...
+    @Override
+    public void show(ModelAndView modelAndView) {
+        if(modelAndView.getAction().equals("/print")) {
+            printChat(modelAndView);
+        } else {
+            init();
+            addEventListener();
+
+            modelAndView.setRno(this.rno);
+            modelAndView.setUrl("/chat/connect");
+
+            dispatcherController.in(modelAndView);
+        }
+    }
+
+    public RoomView(int rno) {
+        this.rno = rno;
+    }
+
+    private void init() {
+        dispatcherController = DispatcherController.getInstance();
+        chatCnt = 0;
+        idx.frame.removeAll();
+        idx.frame.setTitle("RoomView " + rno);
+
+        send = new Button("send");
+        leave = new Button("leave");
+        inputArea = new TextField();
+        chatArea = new JLabel();
+
+        idx.frame.setLayout(new GridLayout(4, 0));
+        idx.frame.add(chatArea);
+        idx.frame.add(inputArea);
+        idx.frame.add(send);
+        idx.frame.add(leave);
+
+        idx.frame.setVisible(true);
+    }
+    private void sendMessage(ModelAndView modelAndView) {
+        // TODO 35 이상일때 다이얼로그
+        if (inputArea.getText().equals("") || inputArea.getText().length() > 35) return;
+
+        modelAndView.setUrl("/chat/sendBroadCast");
+        modelAndView.setText(dispatcherController.getUserName() + ": " + inputArea.getText());
+
+        dispatcherController.in(modelAndView);
+
+        inputArea.setText("");
+    }
+
+    private void addEventListener() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setRno(rno);
+        modelAndView.setUserName(dispatcherController.getUserName());
+
+        inputArea.addActionListener(e -> sendMessage(modelAndView));
+        send.addActionListener(e -> sendMessage(modelAndView));
+        leave.addActionListener(e -> {
+            modelAndView.setUrl("/chat/disconnect");
+
+            dispatcherController.in(modelAndView);
+            modelAndView.setUrl("/view/roomList");
+            dispatcherController.in(modelAndView);
+        });
+    }
+
+    private void printChat(ModelAndView modelAndView) {
+        String prev = chatArea.getText()
+                .replace("<html>", "")
+                .replace("</html>", "");
+        String post = modelAndView.getText()
+                .replace("<", " &lt ")
+                .replace(">", " &gt ");
+
+        if (chatCnt == 4) prev = prev.substring(prev.indexOf("<br/>") + 5);
+        else chatCnt++;
+
+        chatArea.setText("<html>" + prev + post + "<br/></html>");
+    }
+}
+```
+- 모든 `View` 는 `IView` 인터페이스의 `show` 메서드를 통해 다형성을 구현한다.
+- `View`는 변하지 않으므로 `InitializationView`객체의 `frame`을 모두가 공유하면서 다르게 그려준다.
+- `ModelAndView`에 모든 처리와 데이터를 담아 `DispatcherController`에게 넘기며 로직을 처리한다.
+- `printChat` 메서드는 `JLabel`이 `html`으로 작성되었기 때문에 `XSS`를 막고 채팅이 넘어가는 효과를 준다.
+- `addEventListener` 메서드는 `lambda`식으로 코드를 많이 줄일수 있었다.
