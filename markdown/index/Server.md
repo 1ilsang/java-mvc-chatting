@@ -4,7 +4,7 @@ Server 클래스 분석
 
 Main
 ---
-```
+```java
 public class ChatServer {
     public static void main(String[] args) {
         LogThread logThread = LogThread.getInstance();
@@ -25,7 +25,7 @@ public class ChatServer {
 
 Log Thread
 ---
-```
+```java
     @Override
     public void run() {
         logThread.log("Log Thread: " + Thread.currentThread().getName());
@@ -63,7 +63,7 @@ Log Thread
 
 Login Thread
 ---
-```
+```java
 public class LoginSocketThread extends Thread {
     private static Map<String, UserVO> uMap;
     ...
@@ -124,7 +124,7 @@ public class LoginSocketThread extends Thread {
 
 Chatting Thread
 ---
-```
+```java
 public class ChatSocketThread extends Thread {
     private int SYK = 1 << 5;
     private int FIN = 1 << 2;
